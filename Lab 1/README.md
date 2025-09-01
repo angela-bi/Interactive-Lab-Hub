@@ -4,6 +4,8 @@
 
 \*\***NAME OF COLLABORATOR HERE**\*\*
 
+Kyle Li, Elaine Li, Alexandre Gravereaux
+
 In the original stage production of Peter Pan, Tinker Bell was represented by a darting light created by a small handheld mirror off-stage, reflecting a little circle of light from a powerful lamp. Tinkerbell communicates her presence through this light to the other characters. See more info [here](https://en.wikipedia.org/wiki/Tinker_Bell). 
 
 There is no actor that plays Tinkerbell--her existence in the play comes from the interactions that the other characters have with her.
@@ -74,14 +76,30 @@ The interactive device can be anything *except* a computer, a tablet computer or
 
 \*\***Describe your setting, players, activity and goals here.**\*\*
 
+My idea is a create a game using light and collaboration. Each player, equipped with a light projection device with different colors, will have the goal to combine their colors to create the target color provided. For example, the target color could be magenta, and Player 1 with a pink light and Player 2 with a cyan light would find the best configuration (distance, strength of light) to create the target color.
+
+_Setting_: The setting could be anywhere since the projection devices would be ideally portable. Since the game would be played with a light projection device, there would need to be a flaw white surface. The setting could be dark or light, depending on the strength of the projection devices.
+
+_Players_: There could be any number of players up to a realistic extent e.g. the target color might need to be constrained to colors that can support 2+ people. Since this game would ideally be portable, additional players include who is potentially in the same space at this time.
+
+_Activity_: The players are working together to create the target color. Players would be able to talk and discuss how to modify the strength of their colors to create the target color, and could move around to configure their projection devices accordingly.
+
+_Goals_: The goal between the players would be to create the target color. This could be combined with other goals, like creating the color within a certain time constraint, or other physical constraints.
+
 Storyboards are a tool for visually exploring a users interaction with a device. They are a fast and cheap method to understand user flow, and iterate on a design before attempting to build on it. Take some time to read through this explanation of [storyboarding in UX design](https://www.smashingmagazine.com/2017/10/storyboarding-ux-design/). Sketch seven storyboards of the interactions you are planning. **It does not need to be perfect**, but must get across the behavior of the interactive device and the other characters in the scene. 
 
 \*\***Include pictures of your storyboards here**\*\*
+![IMG_4470](https://github.com/user-attachments/assets/426af8f6-c518-4536-a83c-0936286c910d)
+![IMG_4470 2](https://github.com/user-attachments/assets/9deca6e6-5bf8-47a4-82f1-7905149a2787)
+![IMG_4471](https://github.com/user-attachments/assets/88760168-c599-4624-b055-bcd1a632eb2a)
+
 
 Present your ideas to the other people in your breakout room (or in small groups). You can just get feedback from one another or you can work together on the other parts of the lab.
 
 \*\***Summarize feedback you got here.**\*\*
 
+Most of the feedback I got revolved around the prototyping process and the game rules. Kyle mentioned that since the game is centered around projection devices, to consider how the layering and combining of different colors be accomplished with a mobile or computer screen. Alexandre mentioned that the game's goal seems basic at the moment, and that I should consider intermediate goals or additional constraints to add to make the game more interesting.
+ 
 
 ## Part B. Act out the Interaction
 
@@ -89,8 +107,13 @@ Try physically acting out the interaction you planned. For now, you can just pre
 
 \*\***Are there things that seemed better on paper than acted out?**\*\*
 
+I used my phone's flashlight as a mock light projection device to act out my storyboards. 
+
+I noticed that as I brought the flashlight closer to a flat surface, the radius of the circle of light projected from my phone became smaller. This might bring up issues when deciding on a target area the players must make the color in; if the circle is too big and requires more red light, for example, the player with the red light may not be able to fill up the whole target area with their light.
+
 \*\***Are there new ideas that occur to you or your collaborator that come up from the acting?**\*\*
 
+I realized when acting out the game with multiple players that there must be some sort of auditory component to the game that notifies both teams when a team has won, time has run out, etc.
 
 ## Part C. Prototype the device
 
@@ -104,15 +127,26 @@ If you run into technical issues with this tool, you can also use a light switch
 
 \*\***Give us feedback on Tinkerbelle.**\*\*
 
+No feedback, easy setup and use!
 
 ## Part D. Wizard the device
 Take a little time to set up the wizarding set-up that allows for someone to remotely control the device while someone acts with it. Hint: You can use Zoom to record videos, and you can pin someone’s video feed if that is the scene which you want to record. 
 
 \*\***Include your first attempts at recording the set-up video here.**\*\*
 
-Now, hange the goal within the same setting, and update the interaction with the paper prototype. 
+
+
+https://github.com/user-attachments/assets/cd0456bb-38f5-4fef-9db1-a7c79da97c97
+
+
+Now, change the goal within the same setting, and update the interaction with the paper prototype. 
 
 \*\***Show the follow-up work here.**\*\*
+
+Brainstorming features for the device:
+- Device should have the following inputs: camera to evaluate color created by players
+- Device interface should have the features: time left, goal color, camera view
+- Device should have the following outputs: lights that can change to any color (like LED lights), sound for competitive settings to annouce time left & if a team wins
 
 
 ## Part E. Costume the device
@@ -123,12 +157,19 @@ Think about the setting of the device: is the environment a place where the devi
 
 \*\***Include sketches of what your devices might look like here.**\*\*
 
+![IMG_24491AB0DB83-1](https://github.com/user-attachments/assets/4880f5b4-7a5a-4a25-9d10-c54ba1a6e6ec)
+
+
 \*\***What concerns or opportunitities are influencing the way you've designed the device to look?**\*\*
+
+When I was designing my costumes, I knew that I needed all of them to support the three features: a screen to display the goal color, some way to evaluate if the color was made by the players (sensor or camera), and a light source that could change color. All three prototypes have these features, but in different forms. 
 
 
 ## Part F. Record
 
 \*\***Take a video of your prototyped interaction.**\*\*
+
+
 
 \*\***Please indicate who you collaborated with on this Lab.**\*\*
 Be generous in acknowledging their contributions! And also recognizing any other influences (e.g. from YouTube, Github, Twitter) that informed your design. 
