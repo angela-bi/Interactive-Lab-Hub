@@ -169,11 +169,12 @@ When I was designing my costumes, I knew that I needed all of them to support th
 
 \*\***Take a video of your prototyped interaction.**\*\*
 
-
+[video link](https://drive.google.com/file/d/1GaTTXBo5M9qulRiXj7RD36N0z-5VjGy0/view?usp=sharing)
 
 \*\***Please indicate who you collaborated with on this Lab.**\*\*
 Be generous in acknowledging their contributions! And also recognizing any other influences (e.g. from YouTube, Github, Twitter) that informed your design. 
 
+I received advice from my collaborators Kyle Li, Elaine Li, and Alexandre Gravereaux!
 
 
 # Staging Interaction, Part 2 
