@@ -187,6 +187,9 @@ This describes the second week's work for this lab activity.
 You will be assigned three partners from other groups. Go to their github pages, view their videos, and provide them with reactions, suggestions & feedback: explain to them what you saw happening in their video. Guess the scene and the goals of the character. Ask them about anything that wasn’t clear. 
 
 \*\***Summarize feedback from your partners here.**\*\*
+- If you want to incorporate sound, make it so that when color is made, play a sound
+- Does the lighting of a room effect the ability to play the game?
+- Audio cues for if players get closer to the color
 
 ## Make it your own
 
