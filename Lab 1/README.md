@@ -2,10 +2,11 @@
 
 # Staging Interaction
 
-\*\***NAME OF COLLABORATOR HERE**\*\*
+\*\***Collaborators:**\*\* Kyle Li, Elaine Li, Alexandre Gravereaux
 
-Kyle Li, Elaine Li, Alexandre Gravereaux
-
+<details>
+<summary>Toggle original details</summary>
+ 
 In the original stage production of Peter Pan, Tinker Bell was represented by a darting light created by a small handheld mirror off-stage, reflecting a little circle of light from a powerful lamp. Tinkerbell communicates her presence through this light to the other characters. See more info [here](https://en.wikipedia.org/wiki/Tinker_Bell). 
 
 There is no actor that plays Tinkerbell--her existence in the play comes from the interactions that the other characters have with her.
@@ -13,7 +14,6 @@ There is no actor that plays Tinkerbell--her existence in the play comes from th
 For lab this week, we draw on this and other inspirations from theatre to stage interactions with a device where the main mode of display/output for the interactive device you are designing is lighting. You will plot the interaction with a storyboard, and use your computer and a smartphone to experiment with what the interactions will look and feel like. 
 
 _Make sure you read all the instructions and understand the whole of the laboratory activity before starting!_
-
 
 
 ## Prep
@@ -45,6 +45,7 @@ This README.md page in your own repository should be edited to include the work 
 
 ## Lab Overview
 For this assignment, you are going to:
+</details>
 
 A) [Plan](#part-a-plan) 
 
@@ -58,10 +59,9 @@ E) [Costume the device](#part-e-costume-the-device)
 
 F) [Record the interaction](#part-f-record)
 
-Labs are due on Mondays. Make sure this page is linked to on your main class hub page.
-
 ## Part A. Plan 
-
+<details>
+<summary>Toggle original details</summary>
 To stage an interaction with your interactive device, think about:
 
 _Setting:_ Where is this interaction happening? (e.g., a jungle, the kitchen) When is it happening?
@@ -73,6 +73,7 @@ _Activity:_ What is happening between the actors?
 _Goals:_ What are the goals of each player? (e.g., jumping to a tree, opening the fridge). 
 
 The interactive device can be anything *except* a computer, a tablet computer or a smart phone, but the main way it interacts needs to be using light.
+</details>
 
 \*\***Describe your setting, players, activity and goals here.**\*\*
 
@@ -92,7 +93,6 @@ Storyboards are a tool for visually exploring a users interaction with a device.
 ![IMG_4470](https://github.com/user-attachments/assets/426af8f6-c518-4536-a83c-0936286c910d)
 ![IMG_4470 2](https://github.com/user-attachments/assets/9deca6e6-5bf8-47a4-82f1-7905149a2787)
 ![IMG_4471](https://github.com/user-attachments/assets/88760168-c599-4624-b055-bcd1a632eb2a)
-
 
 Present your ideas to the other people in your breakout room (or in small groups). You can just get feedback from one another or you can work together on the other parts of the lab.
 
@@ -117,6 +117,9 @@ I realized when acting out the game with multiple players that there must be som
 
 ## Part C. Prototype the device
 
+<details>
+<summary>Toggle original details</summary>
+
 You will be using your smartphone as a stand-in for the device you are prototyping. You will use the browser of your smart phone to act as a “light” and use a remote control interface to remotely change the light on that device. 
 
 Code for the "Tinkerbelle" tool, and instructions for setting up the server and your phone are [here](https://github.com/IRL-CT/tinkerbelle).
@@ -124,6 +127,7 @@ Code for the "Tinkerbelle" tool, and instructions for setting up the server and 
 We invented this tool for this lab! 
 
 If you run into technical issues with this tool, you can also use a light switch, dimmer, etc. that you can can manually or remotely control.
+</details>
 
 \*\***Give us feedback on Tinkerbelle.**\*\*
 
@@ -134,10 +138,7 @@ Take a little time to set up the wizarding set-up that allows for someone to rem
 
 \*\***Include your first attempts at recording the set-up video here.**\*\*
 
-
-
 https://github.com/user-attachments/assets/cd0456bb-38f5-4fef-9db1-a7c79da97c97
-
 
 Now, change the goal within the same setting, and update the interaction with the paper prototype. 
 
@@ -193,9 +194,79 @@ You will be assigned three partners from other groups. Go to their github pages,
 
 ## Make it your own
 
+<details>
+<summary>Toggle original details</summary>
+ 
 Do last week’s assignment again, but this time: 
 1) It doesn’t have to (just) use light, 
 2) You can use any modality (e.g., vibration, sound) to prototype the behaviors! Again, be creative! Feel free to fork and modify the tinkerbell code! 
-3) We will be grading with an emphasis on creativity. 
+3) We will be grading with an emphasis on creativity.
+
+</details>
 
 \*\***Document everything here. (Particularly, we would like to see the storyboard and video, although photos of the prototype are also great.)**\*\*
+
+## Part A. Plan 
+
+\*\***Describe your setting, players, activity and goals here.**\*\*
+
+My idea would be to create a device that can take sound/image information as input, and output sounds/light based on it. Ideally, people using the device would be able to control which input(s) map to which output(s), e.g. mapping how bright it is outside to how much light the device emits, or mapping sounds (like the sound of people walking by) to the sound level of a pinging noise.
+
+_Setting_: The setting would be inside. I imagined that the device would be used as a lamp or nightlight in a house.
+
+_Players_: The players would be anyone who would be in the house. This could include adults who use the device as a low effort lamp, or children who use the device as a nighlight.
+
+_Activity_: I didn't design the device with interactions between players in mind. However, two different interactions between the device and the players could be that people either interact with it to program the mappings, or interact with it to actually use it for the mapping's purpose.
+
+_Goals_: The goal of the players would depend on the mapping. For the nightlight case, the goal of the player could be something like "getting to the bathroom in the dark." For the low effort lamp case, the goal of the player would be "reducing the amount of times they need to turn the light on and off."
+
+\*\***Include pictures of your storyboards here**\*\*
+
+![IMG_4548](https://github.com/user-attachments/assets/290cae62-ec67-4c74-b1e6-cd90f6d5d7f7)
+![IMG_4550](https://github.com/user-attachments/assets/67c06d45-b36a-4f42-9673-bbd69c668f85)
+![IMG_4551](https://github.com/user-attachments/assets/6f56d2df-6dea-4895-8820-6303762fea2d)
+
+
+## Part B. Act out the Interaction
+
+\*\***Are there things that seemed better on paper than acted out?**\*\*
+
+For the nightlight case, once I acted out the interaction of walking past an object I realized that there could be different ways of determining if a person is walking by. For example, what if the person walking by is a child and their steps are quiet? What if the person walking by is in a wheelchair that is mostly silent? Maybe a version of this device could have motion-detectors as well as video and audio inputs.
+
+\*\***Are there new ideas that occur to you or your collaborator that come up from the acting?**\*\*
+
+For the low-effort lamp, once I acted out using the interaction I thought about adding scheduling functionality, like programming the lights to dim at a certain time of the day, as another practical feature. 
+
+
+## Part D. Wizard the device
+
+To experiment with different possibilities of mapping inputs (such as audio and video) to outputs (such as color, brightness), I used `p5.js`. 
+
+First, I tested code that maps sound levels (between 0-1) and brightness of the `p5.js` canvas. 
+- [video demo](https://drive.google.com/file/d/1d2VIcWkiUWjxrWQMIGoVdlD5_maZfWT4/view?usp=drive_link)
+- [code](https://editor.p5js.org/angelabi2003/sketches/1FNhLCy09)
+- [reference code](https://editor.p5js.org/jessxec/sketches/eHTHsoFEW)
+
+Second, I wanted to test code that simulates the third costume that I thought of. Once again, I used `p5.js` to prototype what this might look like, mapping camera brightness to overall brightness. This time, I tried to represent Costume #3's different lights with rectangles.
+- [video demo](https://drive.google.com/file/d/13OsYz0_wArSyIGHGPYQEv_3lGL1uJIPx/view?usp=sharing)
+- [code](https://editor.p5js.org/angelabi2003/sketches/vlSD4e5Gm)
+- [reference code](https://editor.p5js.org/Atchareeya_J/sketches/ZOZuePTQ2)
+- [chatgpt conversation link](https://chatgpt.com/share/68bd19c2-173c-800d-bc0c-c79244a0babe)
+
+## Part E. Costume the device
+
+\*\***Include sketches of what your devices might look like here.**\*\*
+
+![IMG_7E5CDD647418-1](https://github.com/user-attachments/assets/fbafee27-432f-44ea-b393-05799f84917c)
+
+\*\***What concerns or opportunitities are influencing the way you've designed the device to look?**\*\*
+
+The main concerns I had when designing the device was where/how it could be placed around the household. For example, since Costume #1 is outlet-powered nightlight, its position would be determined by the position of the outlets, a problem which I intended to solve with Costume #2. For Costume #3, I thought it could be flexible in determining the shape and position of the lights while offering an opportunity to design mappings that could map to multiple lights.
+
+## Part F. Record
+
+\*\***Take a video of your prototyped interaction.**\*\*
+
+In my [final video of my prototyped interaction](https://drive.google.com/file/d/1RLT2Y8PvywjNDRP2O6KKoQIyTBAc2CEq/view?usp=sharing), I took my second version of my `p5.js` and modified it so that the brightness of my rectangles (or "lights") would be inverted to the brightness of the camera input. This was supposed to represent the low-effort lamp that I described, where the lamp's brightness adjusted based on the time of day--- when it was bright out, the light would be dim, but when it was dark out, the light would be bright. 
+
+
