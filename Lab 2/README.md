@@ -27,6 +27,7 @@ This guide covers how to pull updates without overwriting your completed work, h
 Prior to the lab session on Thursday, taken inventory of the kit parts that you have, and note anything that is missing:
 
 ***Update your [parts list inventory](partslist.md)***
+Done ✅
 
 3. ### Prepare your Pi for lab this week
 [Follow these instructions](prep.md) to download and burn the image for your Raspberry Pi before lab Thursday.
@@ -164,6 +165,8 @@ You can look in `image.py` for an example of how to display an image on the scre
 ### Set up the Display Clock Demo
 Work on `screen_clock.py`, try to show the time by filling in the while loop (at the bottom of the script where we noted "TODO" for you). You can use the code in `cli_clock.py` and `stats.py` to figure this out.
 
+![Image of display clock](IMG_4743.jpeg)
+
 ### How to Edit Scripts on Pi
 Option 1. One of the ways for you to edit scripts on Pi through terminal is using [`nano`](https://linuxize.com/post/how-to-use-nano-text-editor/) command. You can go into the `screen_clock.py` by typing the follow command line:
 ```
@@ -191,10 +194,10 @@ Does time have to be linear?  How do you measure a year? [In daylights? In midni
 
 Can you make time interactive? You can look in `screen_test.py` for examples for how to use the buttons.
 
-Please sketch/diagram your clock idea. (Try using a [Verplank digram](http://www.billverplank.com/IxDSketchBook.pdf)!
+Please sketch/diagram your clock idea. (Try using a [Verplank digram](http://www.billverplank.com/IxDSketchBook.pdf))!
 
 **We strongly discourage and will reject the results of literal digital or analog clock display.**
-
+![Image of display clock](IMG_4745.jpeg)
 
 \*\*\***A copy of your code should be in your Lab 2 Github repo.**\*\*\*
 
