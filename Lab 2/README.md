@@ -1,6 +1,8 @@
 # Interactive Prototyping: The Clock of Pi
 **NAMES OF COLLABORATORS HERE**
 
+<details>
+<summary>Toggle original details</summary>
 Does it feel like time is moving strangely during this semester?
 
 For our first Pi project, we will pay homage to the [timekeeping devices of old](https://en.wikipedia.org/wiki/History_of_timekeeping_devices) by making simple clocks.
@@ -32,7 +34,7 @@ Done ✅
 3. ### Prepare your Pi for lab this week
 [Follow these instructions](prep.md) to download and burn the image for your Raspberry Pi before lab Thursday.
 
-
+</details>
 
 
 ## Overview
@@ -52,13 +54,19 @@ F) [Make a short video of your modified barebones PiClock](#part-f)
 
 G) [Sketch and brainstorm further interactions and features you would like for your clock for Part 2.](#part-g)
 
+<details>
+<summary>Toggle original details</summary>
 ## The Report
 This readme.md page in your own repository should be edited to include the work you have done. You can delete everything but the headers and the sections between the \*\*\***stars**\*\*\*. Write the answers to the questions under the starred sentences. Include any material that explains what you did in this lab hub folder, and link it in the readme.
 
 Labs are due on Mondays. Make sure this page is linked to on your main class hub page.
+</details>
 
 ## Part A. 
 ### Connect to your Pi
+
+<details>
+<summary>Toggle original details</summary>
 Just like you did in the lab prep, ssh on to your pi. Once you get there, create a Python environment (named venv) by typing the following commands.
 
 ```
@@ -79,10 +87,12 @@ git config --global user.email "yourNetID@cornell.edu"
 The support for password authentication of GitHub was removed on August 13, 2021. That is, in order to link and sync your own lab-hub repo with your Pi, you will have to set up a "Personal Access Tokens" to act as the password for your GitHub account on your Pi when using git command, such as `git clone` and `git push`.
 
 Following the steps listed [here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) from GitHub to set up a token. Depends on your preference, you can set up and select the scopes, or permissions, you would like to grant the token. This token will act as your GitHub password later when you use the terminal on your Pi to sync files with your lab-hub repo.
-
+</details>
 
 ## Part B. 
 ### Try out the Command Line Clock
+<details>
+<summary>Toggle original details</summary>
 Clone your own lab-hub repo for this assignment to your Pi and change the directory to Lab 2 folder (remember to replace the following command line with your own GitHub ID):
 
 ```
@@ -111,10 +121,13 @@ Install the packages from the requirements.txt and run the example script `cli_c
 
 The terminal should show the time, you can press `ctrl-c` to exit the script.
 If you are unfamiliar with the Python code in `cli_clock.py`, have a look at [this Python refresher](https://hackernoon.com/intermediate-python-refresher-tutorial-project-ideas-and-tips-i28s320p). If you are still concerned, please reach out to the teaching staff!
-
+</details>
 
 ## Part C. 
 ### Set up your RGB Display
+<details>
+<summary>Toggle original details</summary>
+  
 We have asked you to equip the [Adafruit MiniPiTFT](https://www.adafruit.com/product/4393) on your Pi in the Lab 2 prep already. Here, we will introduce you to the MiniPiTFT and Python scripts on the Pi with more details.
 
 <img src="https://cdn-learn.adafruit.com/assets/assets/000/082/842/large1024/adafruit_products_4393_iso_ORIG_2019_10.jpg" height="200" />
@@ -135,9 +148,12 @@ Line up the screen and press it on the headers. The hole in the screen should ma
 <img src="https://cdn-learn.adafruit.com/assets/assets/000/087/539/medium640/adafruit_products_4393_quarter_ORIG_2019_10.jpg?1579991932" height="200" />
 <img src="https://cdn-learn.adafruit.com/assets/assets/000/082/861/original/adafruit_products_image.png" height="200">
 </p>
+</details>
 
 ### Testing your Screen
-
+<details>
+<summary>Toggle original details</summary>
+  
 The display uses a communication protocol called [SPI](https://www.circuitbasics.com/basics-of-the-spi-communication-protocol/) to speak with the raspberry pi. We won't go in depth in this course over how SPI works. The port on the bottom of the display connects to the SDA and SCL pins used for the I2C communication protocol which we will cover later. GPIO (General Purpose Input/Output) pins 23 and 24 are connected to the two buttons on the left. GPIO 22 controls the display backlight.
 
 To show you the IP and Mac address of the Pi to allow connecting remotely we created a service that launches a python script that runs on boot. For the following steps stop the service by typing ``` sudo systemctl stop piscreen.service --now```. Othwerise two scripts will try to use the screen at once. You may start it again by typing ``` sudo systemctl start piscreen.service --now```
@@ -151,7 +167,7 @@ You can type the name of a color then press either of the buttons on the MiniPiT
 ```
 (venv) pi@raspberrypi:~/Interactive-Lab-Hub/Lab 2 $ cat screen_test.py
 ```
-
+</details>
 [Video of screen_test.py result](https://drive.google.com/file/d/1XdDcl6X8U7lxhQ272n5ZM5QA64STngPx/view?usp=sharing)
 
 #### Displaying Info with Texts
@@ -170,6 +186,8 @@ Work on `screen_clock.py`, try to show the time by filling in the while loop (at
 ![Image of display clock](IMG_4743.jpeg)
 
 ### How to Edit Scripts on Pi
+<details>
+<summary>Toggle original details</summary>
 Option 1. One of the ways for you to edit scripts on Pi through terminal is using [`nano`](https://linuxize.com/post/how-to-use-nano-text-editor/) command. You can go into the `screen_clock.py` by typing the follow command line:
 ```
 (venv) pi@raspberrypi:~/Interactive-Lab-Hub/Lab 2 $ nano screen_clock.py
@@ -188,6 +206,7 @@ Now you should be able to edit python scripts with Thonny on your Pi.
 Option 3. A nowadays often preferred method is to use Microsoft [VS code to remote connect to the Pi](https://www.raspberrypi.com/news/coding-on-raspberry-pi-remotely-with-visual-studio-code/). This gives you access to a fullly equipped and responsive code editor with terminal and file browser.  
 
 Pro Tip: Using tools like [code-server](https://coder.com/docs/code-server/latest) you can even setup a VS Code coding environment hosted on your raspberry pi and code through a web browser on your tablet or smartphone! 
+</details>
 
 ## Part E. Now moved to Lab2 Part 2.
 
@@ -227,9 +246,9 @@ My code is in files `bluetooth_connect.py` and `video.py`. I also made a `p5.js`
 
 \*\*\***Take a video of your PiClock.**\*\*\*
 
-(PiClock video link)[https://drive.google.com/file/d/173PboCtEup-2P6rF18AwAPX2pRk6RKqU/view?usp=drive_link]
+[PiClock video link](https://drive.google.com/file/d/173PboCtEup-2P6rF18AwAPX2pRk6RKqU/view?usp=drive_link)
 
-(p5 video link)[https://drive.google.com/file/d/1vKhWz4nccW9D8cje88vVp7By-ENjp4T0/view?usp=drive_link]
+[p5 video link](https://drive.google.com/file/d/1vKhWz4nccW9D8cje88vVp7By-ENjp4T0/view?usp=drive_link)
 
 After you edit and work on the scripts for Lab 2, the files should be upload back to your own GitHub repo! You can push to your personal github repo by adding the files here, commiting and pushing.
 
