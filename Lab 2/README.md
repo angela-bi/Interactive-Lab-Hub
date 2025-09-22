@@ -168,6 +168,7 @@ You can type the name of a color then press either of the buttons on the MiniPiT
 (venv) pi@raspberrypi:~/Interactive-Lab-Hub/Lab 2 $ cat screen_test.py
 ```
 </details>
+
 [Video of screen_test.py result](https://drive.google.com/file/d/1XdDcl6X8U7lxhQ272n5ZM5QA64STngPx/view?usp=sharing)
 
 #### Displaying Info with Texts
