@@ -152,6 +152,8 @@ You can type the name of a color then press either of the buttons on the MiniPiT
 (venv) pi@raspberrypi:~/Interactive-Lab-Hub/Lab 2 $ cat screen_test.py
 ```
 
+[Video of screen_test.py result](https://drive.google.com/file/d/1XdDcl6X8U7lxhQ272n5ZM5QA64STngPx/view?usp=sharing)
+
 #### Displaying Info with Texts
 You can look in `screen_boot_script.py` for how to display text on the screen!
 
@@ -159,7 +161,7 @@ You can look in `screen_boot_script.py` for how to display text on the screen!
 
 You can look in `image.py` for an example of how to display an image on the screen. Can you make it switch to another image when you push one of the buttons?
 
-
+![Image of image.py result](IMG_4869.jpeg)
 
 ## Part D. 
 ### Set up the Display Clock Demo
@@ -190,11 +192,10 @@ Pro Tip: Using tools like [code-server](https://coder.com/docs/code-server/lates
 ## Part E. Now moved to Lab2 Part 2.
 
 ## Part F. Now moved to Lab2 Part 2.
-![Image of display clock](IMG_4745.jpeg)
 
 ## Part G. 
 ## Sketch and brainstorm further interactions and features you would like for your clock for Part 2.
-
+![Image of display clock](IMG_4745.jpeg)
 
 # Prep for Part 2
 
