@@ -220,11 +220,16 @@ Please sketch/diagram your clock idea. (Try using a [Verplank digram](http://www
 
 \*\*\***A copy of your code should be in your Lab 2 Github repo.**\*\*\*
 
+My code is in files `bluetooth_connect.py` and `video.py`. I also made a `p5.js` clock when my original plan wasn't working--- I wasn't able to successfully stream the result of the code to the Raspberry Pi but related code is in the folder `p5_clock`.
 
 ## Assignment that was formerly Part F. 
 ## Make a short video of your modified barebones PiClock
 
 \*\*\***Take a video of your PiClock.**\*\*\*
+
+(PiClock video link)[https://drive.google.com/file/d/173PboCtEup-2P6rF18AwAPX2pRk6RKqU/view?usp=drive_link]
+
+(p5 video link)[https://drive.google.com/file/d/1vKhWz4nccW9D8cje88vVp7By-ENjp4T0/view?usp=drive_link]
 
 After you edit and work on the scripts for Lab 2, the files should be upload back to your own GitHub repo! You can push to your personal github repo by adding the files here, commiting and pushing.
 
