@@ -1,12 +1,20 @@
 # Chatterboxes
 **NAMES OF COLLABORATORS HERE**
+Nophar Shalom (ns2242)
+
+<details>
+<summary>Toggle original details</summary>
 [![Watch the video](https://user-images.githubusercontent.com/1128669/135009222-111fe522-e6ba-46ad-b6dc-d1633d21129c.png)](https://www.youtube.com/embed/Q8FWzLMobx0?start=19)
 
 In this lab, we want you to design interaction with a speech-enabled device--something that listens and talks to you. This device can do anything *but* control lights (since we already did that in Lab 1).  First, we want you first to storyboard what you imagine the conversational interaction to be like. Then, you will use wizarding techniques to elicit examples of what people might say, ask, or respond.  We then want you to use the examples collected from at least two other people to inform the redesign of the device.
 
 We will focus on **audio** as the main modality for interaction to start; these general techniques can be extended to **video**, **haptics** or other interactive mechanisms in the second part of the Lab.
+</details>
 
 ## Prep for Part 1: Get the Latest Content and Pick up Additional Parts 
+
+<details>
+<summary>Toggle original details</summary>
 
 Please check instructions in [prep.md](prep.md) and complete the setup before class on Wednesday, Sept 23rd.
 
@@ -29,9 +37,12 @@ pi@ixe00:~/Interactive-Lab-Hub $ git push
 ```
 
 Option 2: On your your own GitHub repo, [create pull request](https://github.com/FAR-Lab/Developing-and-Designing-Interactive-Devices/blob/2022Fall/readings/Submitting%20Labs.md) to get updates from the class Interactive-Lab-Hub. After you have latest updates online, go on your Pi, `cd` to your `Interactive-Lab-Hub` and use `git pull` to get updates from your own GitHub repo.
+</details>
 
 ## Part 1.
 ### Setup 
+<details>
+<summary>Toggle original details</summary>
 
 Activate your virtual environment
 
@@ -50,8 +61,11 @@ Next, run the setup script to install additional text-to-speech dependencies:
 ```
 (.venv)pi@ixe00:~/Interactive-Lab-Hub/Lab 3 $ ./setup.sh
 ```
+</details>
 
 ### Text to Speech 
+<details>
+<summary>Toggle original details</summary>
 
 In this part of lab, we are going to start peeking into the world of audio on your Pi! 
 
@@ -79,9 +93,14 @@ Typically, a `.sh` file is a shell script which you can execute in a terminal. T
 
 You can also play audio files directly with `aplay filename`. Try typing `aplay lookdave.wav`.
 
-\*\***Write your own shell file to use your favorite of these TTS engines to have your Pi greet you by name.**\*\*
-(This shell file should be saved to your own repo for this lab.)
+</details>
 
+\*\***Write your own shell file to use your favorite of these TTS engines to have your Pi greet you by name.**\*\*
+
+My shell file is located in `speech-scripts` under the file name `greet_angela.sh`.
+
+<details>
+<summary>Toggle original details</summary>
 ---
 Bonus:
 [Piper](https://github.com/rhasspy/piper) is another fast neural based text to speech package for raspberry pi which can be installed easily through python with:
@@ -101,6 +120,7 @@ echo 'This sentence is spoken first. This sentence is synthesized while the firs
   piper --model en_US-lessac-medium --output-raw | \
   aplay -r 22050 -f S16_LE -t raw -
 ```
+</details>
   
 ### Speech to Text
 
