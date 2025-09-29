@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# chat logs used to debug timeout issues: https://chatgpt.com/share/68d94cd7-6bbc-800d-8ee2-c30a700fc480
 """
 Simple Ollama Demo for Lab 3
 Basic example of integrating Ollama with voice I/O
@@ -29,26 +30,30 @@ def speak_text(text):
     # Clean text to avoid encoding issues
     clean_text = text.encode('ascii', 'ignore').decode('ascii')
     print(f"Assistant: {clean_text}")
-    subprocess.run(['espeak', f'"{clean_text}"'], shell=True, check=False)
+    subprocess.run(['espeak', f'"{clean_text}"'], check=False)
 
-def query_ollama(prompt, model="phi3:mini"):
-    """Send a text prompt to Ollama and get response"""
+def query_ollama(prompt, model="tinyllama"):
+    """Send a text prompt to Ollama and stream response"""
     try:
-        response = requests.post(
+        with requests.post(
             "http://localhost:11434/api/generate",
             json={
                 "model": model,
                 "prompt": prompt,
-                "stream": False
+                "stream": True
             },
-            timeout=30
-        )
-        
-        if response.status_code == 200:
-            return response.json().get('response', 'No response')
-        else:
-            return f"Error: {response.status_code}"
-    
+            stream=True,
+            timeout=300
+        ) as r:
+            response_text = ""
+            for line in r.iter_lines():
+                if line:
+                    data = json.loads(line.decode("utf-8"))
+                    token = data.get("response", "")
+                    response_text += token
+                    print(token, end="", flush=True)
+            print()
+            return response_text
     except Exception as e:
         return f"Error: {e}"
 
