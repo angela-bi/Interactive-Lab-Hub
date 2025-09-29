@@ -5,6 +5,8 @@
 # Example usage using Dutch (nl) recognition model: `python test_microphone.py -m nl`
 # For more help run: `python test_microphone.py -h`
 
+# NOTE FOR SELF: run `python test_microphone.py -m en -d 0` instead to get actual microphone input
+
 import argparse
 import queue
 import sys
