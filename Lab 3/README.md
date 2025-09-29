@@ -172,6 +172,8 @@ python faster_whisper_try.py
 
 \*\***Write your own shell file that verbally asks for a numerical based input (such as a phone number, zipcode, number of pets, etc) and records the answer the respondent provides.**\*\*
 
+The shell file is under `screen_scripts` with the file name `angela_numerical_input.sh`.
+
 ### 🤖 NEW: AI-Powered Conversations with Ollama
 
 <details>
@@ -243,6 +245,14 @@ answer = ask_ai("How should I greet users?")
 </details>
 
 \*\***Try creating a simple voice interaction that combines speech recognition, Ollama processing, and text-to-speech output. Document what you built and how users responded to it.**\*\*
+
+The file is under the `ollama` folder with the file name `ollama_convo.py`. I used `ollama_demo.py` and `test_microphone.py` as references, and used ChatGPT to generate code that: 
+1. Records the user's voice
+2. Transcribes it using Vosk
+3. Uses Ollama to generate a response
+4. Uses espeak to play the response out loud.
+
+When testing the script, the speaker was quite loud, so when users heard the response they were a bit startled. The conversation felt a bit unnatural because generating a response and playing it out loud took a bit of time, which felt a bit awkward.
 
 ### Serving Pages
 
