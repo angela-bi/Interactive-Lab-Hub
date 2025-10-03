@@ -340,9 +340,12 @@ Since most of my dialogues were prompted by the human, all of the situations I c
 
 
 ### Wizarding with the Pi (optional)
+<details>
+<summary>Toggle original details</summary>
 In the [demo directory](./demo), you will find an example Wizard of Oz project. In that project, you can see how audio and sensor data is streamed from the Pi to a wizard controller that runs in the browser.  You may use this demo code as a template. By running the `app.py` script, you can see how audio and sensor data (Adafruit MPU-6050 6-DoF Accel and Gyro Sensor) is streamed from the Pi to a wizard controller that runs in the browser `http://<YouPiIPAddress>:5000`. You can control what the system says from the controller as well!
 
 \*\***Describe if the dialogue seemed different than what you imagined, or when acted out, when it was wizarded, and how.**\*\*
+</details>
 
 # Lab 3 Part 2
 
@@ -351,8 +354,15 @@ For Part 2, you will redesign the interaction with the speech-enabled device usi
 ## Prep for Part 2
 
 1. What are concrete things that could use improvement in the design of your device? For example: wording, timing, anticipation of misunderstandings...
+
+I could design conversation progression to prepare for longer chains of conversation and better anticipation of misunderstandings.
+
 2. What are other modes of interaction _beyond speech_ that you might also use to clarify how to interact?
+
+Other ways beyond speech I could clarify to the user how to interact could include a visual display for possible questions to ask, such as "Ask me to convert measurements" or "Ask me what grade matcha is best to use."
+
 3. Make a new storyboard, diagram and/or script based on these reflections.
+
 
 ## Prototype your system
 
@@ -365,17 +375,6 @@ The system should:
 
 *Include videos or screencaptures of both the system and the controller.*
 
-<details>
-  <summary><strong>Submission Cleanup Reminder (Click to Expand)</strong></summary>
-  
-  **Before submitting your README.md:**
-  - This readme.md file has a lot of extra text for guidance.
-  - Remove all instructional text and example prompts from this file.
-  - You may either delete these sections or use the toggle/hide feature in VS Code to collapse them for a cleaner look.
-  - Your final submission should be neat, focused on your own work, and easy to read for grading.
-  
-  This helps ensure your README.md is clear professional and uniquely yours!
-</details>
 
 ## Test the system
 Try to get at least two people to interact with your system. (Ideally, you would inform them that there is a wizard _after_ the interaction, but we recognize that can be hard.)
