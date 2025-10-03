@@ -294,7 +294,7 @@ __Dialogue__
 [Recipe](https://www.chopstickchronicles.com/matcha-cookies-checkerboard/) used in fake situation
 
 Quantity of ingredient
-- Person: I just added 95g of plain flower, how much match powder did I need again?
+- Person: I just added 95g of plain flour, how much matcha powder did I need again?
 - Device: 5 grams. 
 
 Converting quantity
@@ -349,32 +349,59 @@ In the [demo directory](./demo), you will find an example Wizard of Oz project. 
 
 # Lab 3 Part 2
 
-For Part 2, you will redesign the interaction with the speech-enabled device using the data collected, as well as feedback from part 1.
+**For Part 2, you will redesign the interaction with the speech-enabled device using the data collected, as well as feedback from part 1.**
 
 ## Prep for Part 2
 
-1. What are concrete things that could use improvement in the design of your device? For example: wording, timing, anticipation of misunderstandings...
+**1. What are concrete things that could use improvement in the design of your device? For example: wording, timing, anticipation of misunderstandings...**
 
 I could design conversation progression to prepare for longer chains of conversation and better anticipation of misunderstandings.
 
-2. What are other modes of interaction _beyond speech_ that you might also use to clarify how to interact?
+**2. What are other modes of interaction _beyond speech_ that you might also use to clarify how to interact?**
 
-Other ways beyond speech I could clarify to the user how to interact could include a visual display for possible questions to ask, such as "Ask me to convert measurements" or "Ask me what grade matcha is best to use."
+I completely forgot that there needs to be something to initiate the conversation, so one way to start the conversation would be prompting the user to upload their recipe on an interface, then having the baking assistant introduce themselves. Other ways beyond speech I could clarify to the user how to interact could include a visual display for possible questions to ask, such as "Ask me to convert measurements" or "Ask me what grade matcha is best to use."
 
-3. Make a new storyboard, diagram and/or script based on these reflections.
+**3. Make a new storyboard, diagram and/or script based on these reflections.**
 
+Script
+- Device: Please input your recipe below.
+- User adds recipe into input
+- Device: Thanks! I'm a chatbot designed to help you with your recipe, Matcha Shortbread Cookies. If you have any questions about this recipe, feel free to ask!
+- User: I just added 95g of plain flour, how much matcha powder did I need again?
+- Device: 5 grams.
+- User: What is 5 grams of matcha in teaspoons?
+- Device: According to Naoki Matcha, 2.5 teaspoons is equivalent to 5 grams of matcha.
+- User: Do I need a high-quality matcha for this recipe?
+- Device: According to the recipe, you only need culinary grade matcha.
+- User: I just finished sifting the matcha and flour. What do I do next?
+- Device: After sifting the matcha and flour, mix together your butter and sugar.
 
 ## Prototype your system
 
-The system should:
-* use the Raspberry Pi 
-* use one or more sensors
-* require participants to speak to it. 
+**Document how the system works**
 
-*Document how the system works*
+My system is a voice-based baking assistant made of a web-based interface, a Raspberry Pi, a microphone, and a speaker. Its goal is to assist the user in answering questions about a recipe that the user is baking with.
 
-*Include videos or screencaptures of both the system and the controller.*
+The web interface was made by using `ollama_web_app.py` as a starting point. The original web app is a text-based chatroom style interaction with an ollama model, and I wanted to use the existing UI components and scripts for my own purposes. I wanted the user flow to be as follows:
 
+1. When the user loads the page, there is a message and input box asking them to copy and paste their recipe.
+2. After the user submits the recipe, the assistant would send a message offering to answer any questions the user has.
+3. The user would be able to click a "Record" button, where they could ask verbal questions about the recipe and get a spoken response back.
+
+<img width="775" height="319" alt="Screenshot 2025-10-03 at 6 09 34 PM" src="https://github.com/user-attachments/assets/a89afd19-026e-46c0-a1f4-bdc89adcecab" />
+
+I started by copying and pasting `ollama_web_app.py`'s python and html files to my own folder `baking_assistant` and toggled some of the UI components such as the font, buttons and scripts. For step 1, I used the existing input box code, and modified the javascript and python scripts. When the user submits their recipe, a function scrapes the recipe link for its ingredients and instructions, and uses that as the context for the recie along with additional prompting "You are a helpful baking assistant offering to help with the recipe. Don't use emojis, only use plain text without astericks, and keep responses brief."
+
+For step 2, I made the first prompt "Hi, who are you?" so that the assistant would introduce itself.
+
+For step 3, I modified one of the original buttons and corresponding scripts in `ollama_web_app.py` to record the user's questions for five seconds and process it using `KaldiRecognizer`. The resulting text would be used to query ollama with the original context, and the answer would be played through the speaker using `espeak`. 
+
+<img width="814" height="741" alt="Screenshot 2025-10-03 at 1 22 51 AM" src="https://github.com/user-attachments/assets/8b0a8241-706b-4384-ba03-0d22f9fc03ba" />
+
+
+**Include videos or screencaptures of both the system and the controller.**
+
+[Link to Demo](https://drive.google.com/file/d/1Y26ckpSJJhdKyP64QI8ItOYiQOxGTHme/view?usp=drive_link)
 
 ## Test the system
 Try to get at least two people to interact with your system. (Ideally, you would inform them that there is a wizard _after_ the interaction, but we recognize that can be hard.)
@@ -396,6 +423,7 @@ Answer the following:
 ### How could you use your system to create a dataset of interaction? What other sensing modalities would make sense to capture?
 
 \*\**your answer here*\*\*
+
 
 
 
