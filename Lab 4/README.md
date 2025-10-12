@@ -62,6 +62,9 @@ For lab this week, we focus both on sensing, to bring in new modes of input into
 
 ## Part 1 Lab Preparation
 
+<details>
+<summary>Toggle original details</summary>
+
 ### Get the latest content:
 As always, pull updates from the class Interactive-Lab-Hub to both your Pi and your own GitHub repo. As we discussed in the class, there are 2 ways you can do so:
 
@@ -97,6 +100,7 @@ Option 3: (preferred) use the Github.com interface to update the changes.
 * Cutting tools
 * Markers
 
+</details>
 
 (We do offer shared cutting board, cutting tools, and markers on the class cart during the lab, so do not worry if you don't have them!)
 
@@ -132,6 +136,9 @@ F) [Record the interaction](#part-f)
 
 ### Quick Start: Python Environment Setup
 
+<details>
+<summary>Toggle original details</summary>
+
 1. **Create and activate a virtual environment in Lab 4:**
 	```bash
 	cd ~/Interactive-Lab-Hub/Lab\ 4
@@ -148,8 +155,13 @@ F) [Record the interaction](#part-f)
 	```
 	If you see "Hello blinka!", your setup is correct. If not, follow the troubleshooting steps in the file or ask for help.
 
+</details>
+
 ### Part A
 ### Capacitive Sensing, a.k.a. Human-Twizzler Interaction 
+
+<details>
+<summary>Toggle original details</summary>
 
 We want to introduce you to the [capacitive sensor](https://learn.adafruit.com/adafruit-mpr121-gator) in your kit. It's one of the most flexible input devices we are able to provide. At boot, it measures the capacitance on each of the 12 contacts. Whenever that capacitance changes, it considers it a user touch. You can attach any conductive material. In your kit, you have copper tape that will work well, but don't limit yourself! In the example below, we use Twizzlers--you should pick your own objects.
 
@@ -168,6 +180,9 @@ These Twizzlers are connected to pads 6 and 10. When you run the code and touch 
 Twizzler 10 touched!
 Twizzler 6 touched!
 ```
+
+</details>
+
 
 ### Part B
 ### More sensors
@@ -255,9 +270,15 @@ Usually, sensors need to be positioned in specific locations or orientations to 
 
 **\*\*\*Draw 5 sketches of different ways you might use your sensor, and how the larger device needs to be shaped in order to make the sensor useful.\*\*\***
 
-**\*\*\*What are some things these sketches raise as questions? What do you need to physically prototype to understand how to anwer those questions?\*\*\***
+**\*\*\*What are some things these sketches raise as questions? What do you need to physically prototype to understand how to answer those questions?\*\*\***
+1. How do we conceal the wire sensor and the raspberry pi so that the roommate doesn't notice that the banana is a decoy? How would we make this prototype multi-input and multi-output?
+2. Where to place the sensor within the prototype so that it detects "nearby" movement? How can we make it portable but still sturdy? We were thinking that it could be a "party-on-the-go" device.
+3. How do we use motors to dispense candy? Where do we need to place the sensor to detect the hand?
+4. How do we make the button inviting to the user? How can we make the screen interactive when it speaks a joke?
+5. How do we integrate the several inputs and outputs in a fluid and interactive manner? How can we cat-proof the cat-end of the device?
 
 **\*\*\*Pick one of these designs to prototype.\*\*\***
+We decided to pick the second design to prototype!
 
 
 ### Part D
@@ -305,9 +326,15 @@ Think about how you want to present the information about what your sensor is se
 
 **\*\*\*What are some things these sketches raise as questions? What do you need to physically prototype to understand how to anwer those questions?\*\*\***
 
+One thing we wanted to consider was how portable our device would be, which included how big or small we wanted it to be (e.g. DJ-sensor is big), how stationary it would be between and during use (e.g. Extra Portable can be taken anywhere at any time). Another aspect we wanted to consider was the orientation of our device, and if it should prioritize surface area or height for stability since it's around alot of moving people. Another question we considered was our future endeavours in adding more inputs and outputs.
+
 **\*\*\*Pick one of these display designs to integrate into your prototype.\*\*\***
 
+We chose 1. Extra Portable!!
+
 **\*\*\*Explain the rationale for the design.\*\*\*** (e.g. Does it need to be a certain size or form or need to be able to be seen from a certain distance?)
+
+We wanted it to be relatively small (smaller than a computer) so it's portable, allowing the user to have a party anywhere!! We sacrificed the size and surface area for portability, and we decided to cover our prototype in a reflective surface. Since we want our speaker to fit inside our device, we need it to be big enough to contain the speaker but not much bigger beyond that. We wanted to add a handle so that the user could carry it anywhere with ease.
 
 Build a cardboard prototype of your design.
 
