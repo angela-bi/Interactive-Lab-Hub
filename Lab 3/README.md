@@ -1,6 +1,6 @@
 # Chatterboxes
 **NAMES OF COLLABORATORS HERE**
-Nophar Shalom (ns2242)
+Nophar Shalom (ns2242) and I collaborated to experiment dialogue with each other!
 
 <details>
 <summary>Toggle original details</summary>
@@ -294,7 +294,7 @@ __Dialogue__
 [Recipe](https://www.chopstickchronicles.com/matcha-cookies-checkerboard/) used in fake situation
 
 Quantity of ingredient
-- Person: I just added 95g of plain flower, how much match powder did I need again?
+- Person: I just added 95g of plain flour, how much matcha powder did I need again?
 - Device: 5 grams. 
 
 Converting quantity
@@ -349,53 +349,104 @@ In the [demo directory](./demo), you will find an example Wizard of Oz project. 
 
 # Lab 3 Part 2
 
-For Part 2, you will redesign the interaction with the speech-enabled device using the data collected, as well as feedback from part 1.
+**For Part 2, you will redesign the interaction with the speech-enabled device using the data collected, as well as feedback from part 1.**
 
 ## Prep for Part 2
 
-1. What are concrete things that could use improvement in the design of your device? For example: wording, timing, anticipation of misunderstandings...
+**1. What are concrete things that could use improvement in the design of your device? For example: wording, timing, anticipation of misunderstandings...**
 
 I could design conversation progression to prepare for longer chains of conversation and better anticipation of misunderstandings.
 
-2. What are other modes of interaction _beyond speech_ that you might also use to clarify how to interact?
+**2. What are other modes of interaction _beyond speech_ that you might also use to clarify how to interact?**
 
-Other ways beyond speech I could clarify to the user how to interact could include a visual display for possible questions to ask, such as "Ask me to convert measurements" or "Ask me what grade matcha is best to use."
+I completely forgot that there needs to be something to initiate the conversation, so one way to start the conversation would be prompting the user to upload their recipe on an interface, then having the baking assistant introduce themselves. Other ways beyond speech I could clarify to the user how to interact could include a visual display for possible questions to ask, such as "Ask me to convert measurements" or "Ask me what grade matcha is best to use."
 
-3. Make a new storyboard, diagram and/or script based on these reflections.
+**3. Make a new storyboard, diagram and/or script based on these reflections.**
 
+Script
+- Device: Please input your recipe below.
+- User adds recipe into input
+- Device: Thanks! I'm a chatbot designed to help you with your recipe, Matcha Shortbread Cookies. If you have any questions about this recipe, feel free to ask!
+- User: I just added 95g of plain flour, how much matcha powder did I need again?
+- Device: 5 grams.
+- User: What is 5 grams of matcha in teaspoons?
+- Device: According to Naoki Matcha, 2.5 teaspoons is equivalent to 5 grams of matcha.
+- User: Do I need a high-quality matcha for this recipe?
+- Device: According to the recipe, you only need culinary grade matcha.
+- User: I just finished sifting the matcha and flour. What do I do next?
+- Device: After sifting the matcha and flour, mix together your butter and sugar.
 
 ## Prototype your system
 
-The system should:
-* use the Raspberry Pi 
-* use one or more sensors
-* require participants to speak to it. 
+**Document how the system works**
 
-*Document how the system works*
+My system is a voice-based baking assistant made of a web-based interface, a Raspberry Pi, a microphone, and a speaker. Its goal is to assist the user in answering questions about a recipe that the user is baking with.
 
-*Include videos or screencaptures of both the system and the controller.*
+The web interface was made by using `ollama_web_app.py` as a starting point. The original web app is a text-based chatroom style interaction with an ollama model, and I wanted to use the existing UI components and scripts for my own purposes. I wanted the user flow to be as follows:
 
+1. When the user loads the page, there is a message and input box asking them to copy and paste their recipe.
+2. After the user submits the recipe, the assistant would send a message offering to answer any questions the user has.
+3. The user would be able to click a "Record" button, where they could ask verbal questions about the recipe and get a spoken response back.
+
+I started by copying and pasting `ollama_web_app.py`'s python and html files to my own folder `baking_assistant` and toggled some of the UI components such as the font, buttons and scripts. For step 1, I used the existing input box code, and modified the javascript and python scripts. When the user submits their recipe, a function scrapes the recipe link for its ingredients and instructions, and uses that as the context for the recie along with additional prompting "You are a helpful baking assistant offering to help with the recipe. Don't use emojis, only use plain text without astericks, and keep responses brief."
+
+For step 2, I made the first prompt "Hi, who are you?" so that the assistant would introduce itself.
+
+For step 3, I modified one of the original buttons and corresponding scripts in `ollama_web_app.py` to record the user's questions for five seconds and process it using `KaldiRecognizer`. The resulting text would be used to query ollama with the original context, and the answer would be played through the speaker using `espeak`. 
+
+<img width="814" height="741" alt="Screenshot 2025-10-03 at 1 22 51 AM" src="https://github.com/user-attachments/assets/8b0a8241-706b-4384-ba03-0d22f9fc03ba" />
+
+**Include videos or screencaptures of both the system and the controller.**
+
+Note: I chose to fully implement the ollama model in my prototype, so I didn't have a separate system and controller.
+
+[Link to Demo](https://drive.google.com/file/d/1Y26ckpSJJhdKyP64QI8ItOYiQOxGTHme/view?usp=drive_link)
+
+If you want to try it out yourself:
+1. `cd` to `Lab 3`
+2. `source .venv/bin/activate`
+3. `cd` to `baking_assistant`
+4. `python baking_assistant_convo.py`
+5. The local website should be launched!
 
 ## Test the system
-Try to get at least two people to interact with your system. (Ideally, you would inform them that there is a wizard _after_ the interaction, but we recognize that can be hard.)
+Try to get at least two people to interact with your system. 
 
 Answer the following:
 
-### What worked well about the system and what didn't?
-\*\**your answer here*\*\*
+### What worked well about the system and what didn't? What worked well about the controller and what didn't?
 
-### What worked well about the controller and what didn't?
+I tested my prototype with two people. Because my prototype implemented actual ollama responses, I was able to get fully-fledged responses for any possible input from the user without needing to hard-code or wizard the device. For example, when one of the users asked "I don't have any unsalted butter, what else can I use?" my prototype was able to offer coconut oil or margarine as alternatives.
 
-\*\**your answer here*\*\*
+Users experienced a few problems with the design of the interface and the models. The main problem users had was that the interface didn't indicate when and for how long it recorded their voice. When testing out the recording functionality, I had to tell users that the program I wrote only recorded for five seconds. The first time one of the users tested out the tool, they attempted to say "I don't have any unsalted butter, what else can I use?" but the recording stopped before they could finish. Additionally, `KaldiRecognizer` isn't always the most accurate, so what got fed into the model was "i don't have insulted," which prompted the response "As an AI language model, my goal is to provide helpful suggestions and answers without insulting anyone. Please let me know if there's anything I can assist you with or any other question you may have." Instead of just having one "Record" button, I should have made a "Start Recording" and "Stop Recording" button.
+
+Additionally, `KaldiRecognizer` and Qwen (especially such a lightweight model) weren't always the best at interpreting spoken recordings and generating responses, and still took a long time to generate responses.
+Here are some other funny interpretations by `KaldiRecognizer` and their corresponding responses from when I was testing the tool out:
+
+![image1](https://github.com/angela-bi/Interactive-Lab-Hub/blob/03014c50458ebe5c02b972dc12806959ee30a0a8/Lab%203/screenshots/Screenshot%202025-10-03%20at%201.17.48%E2%80%AFAM.png)
+
+(The recipe said to use 1 egg yolk 😭)
+
+One especially funny interaction was this one:
+
+![image2](https://github.com/angela-bi/Interactive-Lab-Hub/blob/03014c50458ebe5c02b972dc12806959ee30a0a8/Lab%203/screenshots/Screenshot%202025-10-03%20at%2012.56.37%E2%80%AFAM.png)
+
+I had originally asked "How much flour do I use" which got turned into "How much florida I use" which resulted in a very funny response.
+
+In this instance, `KaldiRecognizer` and Qwen generated an adequate response, but it took a really long time for the response to generate, and the response was super long (even though I said to keep responses brief in the context):
+
+<img width="703" height="459" alt="Screenshot 2025-10-05 at 5 01 22 PM" src="https://github.com/user-attachments/assets/242c8503-2413-4370-bdc4-5bd74e239560" />
+
+Future work would include refining prompting and trying out different speech-to-text, ollama, and text-to-speech models.
 
 ### What lessons can you take away from the WoZ interactions for designing a more autonomous version of the system?
 
-\*\**your answer here*\*\*
-
+This question doesn't apply to me since instead of wizarding the interaction I just built a working prototype.
 
 ### How could you use your system to create a dataset of interaction? What other sensing modalities would make sense to capture?
 
-\*\**your answer here*\*\*
+I think this system could inform other similar activities that would benefit from interaction without having users physically touch their devices that much, such as drawing, ceramics, and painting. Building a dataset of interaction from these types of activities would allow for more insights about the types of questions people want to ask during these activities (specification, next steps, etc). I think visual sensing modalities would be the most helpful to capture.
+
 
 
 
