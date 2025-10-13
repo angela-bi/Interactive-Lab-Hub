@@ -309,6 +309,7 @@ Usually, sensors need to be positioned in specific locations or orientations to 
 
 ![PXL_20251008_170113134 MP](https://github.com/user-attachments/assets/f629d23b-2c1a-407e-b56e-5ec78578102f)
 ![PXL_20251008_170528809 MP](https://github.com/user-attachments/assets/02c1f516-2152-4a6c-9e60-98e71c99b6b9)
+![IMG_258C7BBD1C26-1](https://github.com/user-attachments/assets/bbd4e3fa-87e5-4a6f-8d57-bcfe1f88d40f)
 
 
 **\*\*\*What are some things these sketches raise as questions? What do you need to physically prototype to understand how to answer those questions?\*\*\***
