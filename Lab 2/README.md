@@ -184,6 +184,29 @@ You can look in `image.py` for an example of how to display an image on the scre
 ### Set up the Display Clock Demo
 Work on `screen_clock.py`, try to show the time by filling in the while loop (at the bottom of the script where we noted "TODO" for you). You can use the code in `cli_clock.py` and `stats.py` to figure this out.
 
+Relevant code is contained here:
+```
+while True:
+    # Draw a black filled box to clear the image.
+    draw.rectangle((0, 0, width, height), outline=0, fill=400)
+
+    #TODO: Lab 2 part D work should be filled in here. You should be able to look in cli_clock.py and stats.py 
+    
+    # code from stats.py
+    padding = -2
+    top = padding
+    bottom = height - padding
+    x = 0
+    y = top
+
+    # code from cli_clock.py
+    draw.text((x, y), strftime("%m/%d/%Y %H:%M:%S"), font=font, fill="#FFFFFF")
+
+    # Display image.
+    disp.image(image, rotation)
+    time.sleep(1)
+```
+
 ![Image of display clock](IMG_4743.jpeg)
 
 ### How to Edit Scripts on Pi
@@ -209,20 +232,16 @@ Option 3. A nowadays often preferred method is to use Microsoft [VS code to remo
 Pro Tip: Using tools like [code-server](https://coder.com/docs/code-server/latest) you can even setup a VS Code coding environment hosted on your raspberry pi and code through a web browser on your tablet or smartphone! 
 </details>
 
-## Part E. Now moved to Lab2 Part 2.
-
-## Part F. Now moved to Lab2 Part 2.
-
 ## Part G. 
 ## Sketch and brainstorm further interactions and features you would like for your clock for Part 2.
+
+I expanded on an idea for my clock using the Verplank diagram. I envisioned that it would be an alarm that used the videos in your camera roll to wake you up. Normally, it would play ambient videos, but if you set an alarm it would play your loudest video, and subsequent snoozes would make the next video played a little quieter.
+
 ![Image of display clock](IMG_4745.jpeg)
 
-# Prep for Part 2
-
-1. Pick up remaining parts for kit on Thursday lab class. Check the updated [parts list inventory](partslist.md) and let the TA know if there is any part missing.
-  
-
-2. Look at and give feedback on the Part G. for at least 2 other people in the class (and get 2 people to comment on your Part G!)
+Feedback: 
+- Kyle said that he would want the alarm to get louder, instead of quieter; if the first video didn't wake him up, the subsequent videos definitely wouldn't. This is a good point and a reason why I should've gotten feedback earlier because I assumed the opposite--- that the clock would reward the user snoozing it by getting quieter.
+- Jesse said that she would want the clock to also have the time on it, which is a really good point 😭
 
 # Lab 2 Part 2
 
@@ -237,10 +256,257 @@ Please sketch/diagram your clock idea. (Try using a [Verplank diagram](https://c
 
 **We strongly discourage and will reject the results of literal digital or analog clock display.**
 
-
 \*\*\***A copy of your code should be in your Lab 2 Github repo.**\*\*\*
 
-My code is in files `bluetooth_connect.py` and `video.py`. I also made a `p5.js` clock when my original plan wasn't working--- I wasn't able to successfully stream the result of the code to the Raspberry Pi but related code is in the folder `p5_clock`.
+I started by trying to make bluetooth audio work. This was quite an ordeal and took longer than it should've because we weren't provided the speaker's model name at the time, so in the end I connected it to my personal speaker. Code for this is in `bluetooth_connect.py` and below:
+
+```
+# code from https://chatgpt.com/share/68d1a454-700c-800d-97b9-185324e69dee
+
+#!/usr/bin/env python3
+import subprocess
+import time
+
+JBL_MAC = "D8:37:3B:84:AA:F1"  # JBL Flip 5
+
+def connect_device(mac):
+    """Pair, trust, and connect to a Bluetooth device by MAC address."""
+    print(f"Connecting to JBL Flip 5 ({mac})...")
+
+    commands = [
+        "power on",
+        "agent on",
+        "default-agent",
+        f"pair {mac}",
+        f"trust {mac}",
+        f"connect {mac}",
+        "quit"
+    ]
+
+    process = subprocess.Popen(
+        ["bluetoothctl"],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+    for cmd in commands:
+        print(f"> {cmd}")
+        process.stdin.write(cmd + "\n")
+        process.stdin.flush()
+        # wait a bit after each command so bluetoothctl can respond
+        time.sleep(2)
+
+    process.stdin.close()
+    process.wait()
+    print("Finished connecting process. If successful, audio will now route to your JBL Flip 5.")
+
+if __name__ == "__main__":
+    connect_device(JBL_MAC)
+```
+
+After I got bluetooth audios to play, I had to make videos play on my pi screen. This was another ordeal and a few libraries didn't work before `cv2` finally worked. Relevant code in `video.py` and below: 
+
+```
+import subprocess
+import cv2
+from PIL import Image
+import digitalio, board
+import adafruit_rgb_display.st7789 as st7789
+import os, glob, re, time, datetime
+
+# ---------------------------
+# Setup Display
+# ---------------------------
+cs_pin = digitalio.DigitalInOut(board.D5)
+dc_pin = digitalio.DigitalInOut(board.D25)
+reset_pin = digitalio.DigitalInOut(board.D24)
+BAUDRATE = 24000000
+spi = board.SPI()
+disp = st7789.ST7789(
+    spi, cs=cs_pin, dc=dc_pin, rst=reset_pin,
+    baudrate=BAUDRATE, width=135, height=240,
+    x_offset=53, y_offset=40,
+)
+
+# Backlight
+backlight = digitalio.DigitalInOut(board.D22)
+backlight.switch_to_output(value=True)
+
+# ---------------------------
+# Buttons
+# ---------------------------
+buttonA = digitalio.DigitalInOut(board.D23)  # next video
+buttonA.switch_to_input(pull=digitalio.Pull.UP)
+
+# ---------------------------
+# Video Scan + Loudness Ranking
+# ---------------------------
+VIDEO_DIR = "./videos"
+VIDEO_EXTENSIONS = ("*.mp4", "*.mov", "*.MOV", "*.avi", "*.mkv")
+
+video_files = []
+for ext in VIDEO_EXTENSIONS:
+    video_files.extend(glob.glob(os.path.join(VIDEO_DIR, ext)))
+
+if not video_files:
+    print("No videos found in", VIDEO_DIR)
+    exit(1)
+
+def get_max_volume(video_path):
+    """Return max_volume in dB (closer to 0 = louder)."""
+    try:
+        cmd = [
+            "ffmpeg", "-i", video_path,
+            "-af", "volumedetect", "-f", "null", "-"
+        ]
+        result = subprocess.run(
+            cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, text=True
+        )
+        matches = re.findall(r"max_volume: (-?\d+(\.\d+)?) dB", result.stderr)
+        if matches:
+            return float(matches[-1][0])
+    except Exception as e:
+        print(f"Error analyzing {video_path}: {e}")
+    return -9999.0
+
+# Rank videos loudest → quietest
+ranked_videos = sorted(video_files, key=get_max_volume, reverse=True)
+print("Videos ranked by loudness:")
+for i, v in enumerate(ranked_videos):
+    print(f"{i+1}. {v}")
+
+# ---------------------------
+# Video Playback Function
+# ---------------------------
+def play_video(video_path):
+    print(f"Playing: {video_path}")
+    # Start audio in background
+    audio_proc = subprocess.Popen([
+        "ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet", video_path
+    ])
+
+    cap = cv2.VideoCapture(video_path)
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        # Convert and display
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        image = Image.fromarray(frame)
+
+        # Resize/crop for screen
+        if disp.rotation % 180 == 90:
+            height, width = disp.width, disp.height
+        else:
+            width, height = disp.width, disp.height
+
+        image_ratio = image.width / image.height
+        screen_ratio = width / height
+        if screen_ratio < image_ratio:
+            scaled_width = image.width * height // image.height
+            scaled_height = height
+        else:
+            scaled_width = width
+            scaled_height = image.height * width // image.width
+        image = image.resize((scaled_width, scaled_height), Image.BICUBIC)
+        x = scaled_width // 2 - width // 2
+        y = scaled_height // 2 - height // 2
+        image = image.crop((x, y, x + width, y + height))
+
+        disp.image(image)
+
+        # Button check (break early to switch video)
+        if buttonA.value == False:  # button pressed (active-low)
+            print("Button pressed -> switching video")
+            cap.release()
+            audio_proc.terminate()
+            return "next"
+
+    cap.release()
+    audio_proc.wait()
+    return "done"
+
+# ---------------------------
+# Main Loop
+# ---------------------------
+TARGET_TIME = "16:00"  # <-- set target time (HH:MM 24hr)
+
+started = False
+video_index = 0
+
+print(f"Waiting until {TARGET_TIME} to play loudest video...")
+
+while True:
+    now = datetime.datetime.now().strftime("%H:%M")
+
+    if not started and now == TARGET_TIME:
+        started = True
+        video_index = 0
+        play_video(ranked_videos[video_index])
+
+    if started:
+        # If button is pressed, cycle through next loudest
+        if buttonA.value == False:  # active-low
+            video_index = (video_index + 1) % len(ranked_videos)
+            time.sleep(0.3)  # debounce
+            play_video(ranked_videos[video_index])
+
+    time.sleep(0.2)
+```
+
+I also made a `p5.js` clock when my original plan wasn't working--- I wasn't able to successfully stream the result of the code to the Raspberry Pi due to additional issues with streaming graphics to the Pi screen but related code is in the folder `p5_clock`. I made it so that the visuals (the evolving flower-looking thing) change based on the hours, minutes, and seconds.
+
+The video of the p5.js clock is here:
+[p5 video link](https://drive.google.com/file/d/1vKhWz4nccW9D8cje88vVp7By-ENjp4T0/view?usp=drive_link)
+
+And relevant code is here:
+
+```
+function setup() {
+	createCanvas(400, 200);
+  }
+  
+  function draw() {
+	background(220);
+	
+	let hr = hour();
+	let mn = minute();
+	let sc = second();
+	let date = new Date();
+	let ms = date.getMilliseconds();
+	
+	push();
+	// noFill();
+	fill(0,50)
+	noStroke()
+	translate(200, 100);
+	for (let i = 0; i < 10; i++) {
+	  ellipse(hr, mn, ms, hr);
+	  rotate(PI / max(1, sc));
+	}
+	pop();
+	let formattedHr = nf(hr, 2);
+	let formattedMn = nf(mn, 2);
+	let formattedSc = nf(sc, 2);
+  
+	let timeString = formattedHr + ":" + formattedMn + ":" + formattedSc;
+	
+  
+	push();
+	  drawingContext.save();
+	drawingContext.globalCompositeOperation = 'difference';
+	fill(255);
+	textSize(60);
+	textAlign(CENTER, CENTER);
+	text(timeString, width / 2, height / 2); // Display time in the center
+	pop();
+	
+	blendMode(BLEND);
+  }
+```
 
 ## Assignment that was formerly Part F. 
 ## Make a short video of your modified barebones PiClock
@@ -248,8 +514,6 @@ My code is in files `bluetooth_connect.py` and `video.py`. I also made a `p5.js`
 \*\*\***Take a video of your PiClock.**\*\*\*
 
 [PiClock video link](https://drive.google.com/file/d/173PboCtEup-2P6rF18AwAPX2pRk6RKqU/view?usp=drive_link)
-
-[p5 video link](https://drive.google.com/file/d/1vKhWz4nccW9D8cje88vVp7By-ENjp4T0/view?usp=drive_link)
 
 After you edit and work on the scripts for Lab 2, the files should be upload back to your own GitHub repo! You can push to your personal github repo by adding the files here, commiting and pushing.
 
