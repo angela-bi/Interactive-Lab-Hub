@@ -30,6 +30,14 @@ def download_video(url):
         ydl.download([url])
     return TEMP_FILE
 
+def disco():
+    """Random LED flashing"""
+    for _ in range(12):
+        ld = random.choice(leds)
+        ld.value = False
+        time.sleep(0.08)
+        ld.value = True
+
 
 def runExample():
     print("\nSparkFun VCNL4040 Proximity Sensor + VLC (Local Playback Mode)\n")
@@ -72,6 +80,7 @@ def runExample():
             if variation > MOVEMENT_THRESHOLD:
                 if not is_playing:
                     print("Movement detected: PLAY")
+                    disco()
                     player.play()
                     is_playing = True
             else:
