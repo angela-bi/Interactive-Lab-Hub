@@ -2,18 +2,28 @@
 
 **NAMES OF COLLABORATORS HERE**
 
+<details>
+<summary>Toggle original details</summary>
+
 
 For lab this week, we focus on creating interactive systems that can detect and respond to events or stimuli in the environment of the Pi, like the Boat Detector we mentioned in lecture. 
 Your **observant device** could, for example, count items, find objects, recognize an event or continuously monitor a room.
 
 This lab will help you think through the design of observant systems, particularly corner cases that the algorithms need to be aware of.
 
+</details>
+
 ## Prep
+
+<details>
+<summary>Toggle original details</summary>
 
 1.  Install VNC on your laptop if you have not yet done so. This lab will actually require you to run script on your Pi through VNC so that you can see the video stream. Please refer to the [prep for Lab 2](https://github.com/FAR-Lab/Interactive-Lab-Hub/blob/-/Lab%202/prep.md#using-vnc-to-see-your-pi-desktop).
 2.  Install the dependencies as described in the [prep document](prep.md). 
 3.  Read about [OpenCV](https://opencv.org/about/),[Pytorch](https://pytorch.org/), [MediaPipe](https://mediapipe.dev/), and [TeachableMachines](https://teachablemachine.withgoogle.com/).
 4.  Read Belloti, et al.'s [Making Sense of Sensing Systems: Five Questions for Designers and Researchers](https://www.cc.gatech.edu/~keith/pubs/chi2002-sensing.pdf).
+
+</details>
 
 ### For the lab, you will need:
 1. Pull the new Github Repo
@@ -43,6 +53,9 @@ D) [Reflect](#part-d)
 
 #### Pytorch for object recognition
 
+<details>
+<summary>Toggle original details</summary>
+
 For this first demo, you will be using PyTorch and running a MobileNet v2 classification model in real time (30 fps+) on the CPU. We will be following steps adapted from [this tutorial](https://pytorch.org/tutorials/intermediate/realtime_rpi.html).
 
 ![torch](Readme_files/pyt.gif)
@@ -70,11 +83,16 @@ The first 2 inferences will be slower. Now, you can try placing several objects 
 
 Read the `infer.py` script, and get familiar with the code. You can change the video resolution and frames per second (fps). You can also easily use the weights of other pre-trained models. You can see examples of other models [here](https://pytorch.org/tutorials/intermediate/realtime_rpi.html#model-choices). 
 
+</details>
+
 
 ### Machine Vision With Other Tools
 The following sections describe tools ([MediaPipe](#mediapipe) and [Teachable Machines](#teachable-machines)).
 
 #### MediaPipe
+
+<details>
+<summary>Toggle original details</summary>
 
 A recent open source and efficient method of extracting information from video streams comes out of Google's [MediaPipe](https://mediapipe.dev/), which offers state of the art face, face mesh, hand pose, and body pose detection.
 
@@ -97,9 +115,13 @@ Consider how you might use this position based approach to create an interaction
 
 (You might also consider how this notion of percentage control with hand tracking might be used in some of the physical UI you may have experimented with in the last lab, for instance in controlling a servo or rotary encoder.)
 
-
+</details>
 
 #### Teachable Machines
+
+<details>
+<summary>Toggle original details</summary>
+
 Google's [TeachableMachines](https://teachablemachine.withgoogle.com/train) is very useful for prototyping with the capabilities of machine learning. We are using [a python package](https://github.com/MeqdadDev/teachable-machine-lite) with tensorflow lite to simplify the deployment process.
 
 ![Tachable Machines Pi](Readme_files/tml_pi.gif)
@@ -119,15 +141,24 @@ Next train your own model. Visit [TeachableMachines](https://teachablemachine.wi
 ![Teachable Machines Browser](Readme_files/tml_browser.gif)
 ![Tensorflow Lite Download](Readme_files/tml_download-model.png)
 
+</details>
+
 Include screenshots of your use of Teachable Machines, and write how you might use this to create your own classifier. Include what different affordances this method brings, compared to the OpenCV or MediaPipe options.
 
+
 #### (Optional) Legacy audio and computer vision observation approaches
+
+<details>
+<summary>Toggle original details</summary>
+
 In an earlier version of this class students experimented with observing through audio cues. Find the material here:
 [Audio_optional/audio.md](Audio_optional/audio.md). 
 Teachable machines provides an audio classifier too. If you want to use audio classification this is our suggested method. 
 
 In an earlier version of this class students experimented with foundational computer vision techniques such as face and flow detection. Techniques like these can be sufficient, more performant, and allow non discrete classification. Find the material here:
 [CV_optional/cv.md](CV_optional/cv.md).
+
+</details>
 
 ### Part B
 ### Construct a simple interaction.
