@@ -1,0 +1,1 @@
+echo "Hello Angela! I'm your raspberry pi" | festival --tts
