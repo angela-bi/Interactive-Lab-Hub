@@ -185,8 +185,12 @@ In an earlier version of this class students experimented with foundational comp
 * This can be as simple as the boat detector shown in lecture.
 * Try out different interaction outputs and inputs.
 
-
 **\*\*\*Describe and detail the interaction, as well as your experimentation here.\*\*\***
+
+Wendy helped me come up with a cool idea---when I was asking about another idea, I was using a hand pinching movement, and she pitched an idea that I could make something that squishes someone's face when their fingers appear to be squishing their face on the camera.
+
+Interaction drawn below:
+
 
 ### Part C
 ### Test the interaction prototype
