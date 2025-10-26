@@ -163,6 +163,11 @@ Next train your own model. Visit [TeachableMachines](https://teachablemachine.wi
 
 Include screenshots of your use of Teachable Machines, and write how you might use this to create your own classifier. Include what different affordances this method brings, compared to the OpenCV or MediaPipe options.
 
+<img width="1248" height="636" alt="Screenshot 2025-10-22 at 4 36 07 PM" src="https://github.com/user-attachments/assets/c22f8c7e-8e8a-4143-8017-ef8e624cf03e" />
+
+<img width="1251" height="639" alt="Screenshot 2025-10-22 at 4 35 59 PM" src="https://github.com/user-attachments/assets/028a623b-b305-47b1-8292-6d7e7ea59878" />
+
+I could use this to create a classifier to distinguish between any two tasks. This could include two different movements (like I did above where I classified a peace sign and a shaka), or the presence of something (like a boat vs. no boat). This method is a lot easier to train and interpret the results of, and can be generalized to any two things you want to classify between. OpenCV supports hand and face tracking, which is more useful for determining concrete things such as "Is my hand on top of my face," and MediaPipe might be more useful for non-deterministic tasks that are especially suited to natural language. Teachable Machines is most useful for determining between two tasks that might take many different appearances e.g. boats can have many different appearances.
 
 #### (Optional) Legacy audio and computer vision observation approaches
 
@@ -190,6 +195,34 @@ In an earlier version of this class students experimented with foundational comp
 Wendy helped me come up with a cool idea---when I was asking about another idea, I was using a hand pinching movement, and she pitched an idea that I could make something that squishes someone's face when their fingers appear to be squishing their face on the camera.
 
 Interaction drawn below:
+
+![IMG_20133C582D98-1](https://github.com/user-attachments/assets/ef80aeee-fa40-412c-adc2-c29b1345d3e9)
+
+I started with the original `hand_pose.py` code, and asked chatGPT how I could modify that code to determine if my face was between my fingers. It gave me this code snippet: 
+```
+# Check if a face is between thumb and index
+        minX, maxX = min(thumbX, pointerX), max(thumbX, pointerX)
+        minY, maxY = min(thumbY, pointerY), max(thumbY, pointerY)
+        cv2.rectangle(img, (minX, minY), (maxX, maxY), (0, 255, 0), 2)
+
+        for (x, y, w, h) in faces:
+            face_center_x, face_center_y = x + w // 2, y + h // 2
+            if minX < face_center_x < maxX and minY < face_center_y < maxY:
+                cv2.putText(img, 'FACE BETWEEN FINGERS!', (40, 100),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 3)
+                cv2.circle(img, (face_center_x, face_center_y), 10, (0, 255, 0), cv2.FILLED)
+
+```
+
+I tested it out and it didn't seem to work as I intended. I looked more into the code and I didn't like how it used the center of the face and not just the whole rectange formed around the face. I drew out the conditions I wanted it to meet instead and wrote the code for it (with a margin as well). 
+
+![IMG_E6D9EA5A44F1-1](https://github.com/user-attachments/assets/2a310c2a-2482-473d-a4f3-1c96b5153c37)
+
+```
+            margin = 10
+            condition = (x < pointerX and pointerX < x+w) and (pointerY < y) and (x < thumbX and thumbX < x+w) and (thumbY > y+h)
+            condition_with_margin = (x-margin < pointerX and pointerX < x+w+margin) and (x-margin < thumbX and thumbX < x+w+margin)
+```
 
 
 ### Part C
