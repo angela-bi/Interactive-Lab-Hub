@@ -1,6 +1,6 @@
 # Observant Systems
 
-**NAMES OF COLLABORATORS HERE**
+**NAMES OF COLLABORATORS HERE** Wendy Ju for giving me the idea for the system, thank you!!
 
 <details>
 <summary>Toggle original details</summary>
@@ -46,7 +46,8 @@ C) [Flight test](#part-c)
 
 D) [Reflect](#part-d)
 
----
+-----
+<br>
 
 ### Part A
 ### Play with different sense-making algorithms.
@@ -183,6 +184,9 @@ In an earlier version of this class students experimented with foundational comp
 
 </details>
 
+-----
+<br>
+
 ### Part B
 ### Construct a simple interaction.
 
@@ -224,22 +228,98 @@ I tested it out and it didn't seem to work as I intended. I looked more into the
             condition_with_margin = (x-margin < pointerX and pointerX < x+w+margin) and (x-margin < thumbX and thumbX < x+w+margin)
 ```
 
+Also, the resulting visual that ChatGPT generated for the pinch motion wasn't what I wanted:
+
+```
+# Visual cue for pinch
+        if length < 50:
+            cv2.circle(img, (cx, cy), 15, (0, 255, 0), cv2.FILLED)
+```
+
+So I changed the prompt to ask for the actual image to stretch according to how close my thumb and index finger were.
+
+```
+                face_roi = img[y:y+h, x:x+w]
+                squish_factor = np.interp(length, [50, 300], [0.4, 1.0])
+                new_w = int(w * (1 / squish_factor))
+                new_h = int(h * squish_factor)
+                squished = cv2.resize(face_roi, (new_w, new_h))
+
+                if squished.shape[0] > h:  # too tall
+                    start_y = (squished.shape[0] - h) // 2
+                    squished = squished[start_y:start_y + h, :]
+                elif squished.shape[0] < h:  # too short
+                    pad_y = (h - squished.shape[0]) // 2
+                    squished = cv2.copyMakeBorder(squished, pad_y, h - squished.shape[0] - pad_y, 0, 0, cv2.BORDER_REPLICATE)
+
+                if squished.shape[1] > w:  # too wide
+                    start_x = (squished.shape[1] - w) // 2
+                    squished = squished[:, start_x:start_x + w]
+                elif squished.shape[1] < w:  # too narrow
+                    pad_x = (w - squished.shape[1]) // 2
+                    squished = cv2.copyMakeBorder(squished, 0, 0, pad_x, w - squished.shape[1] - pad_x, cv2.BORDER_REPLICATE)
+
+                # Guarantee exact shape match before replacement
+                squished = squished[:h, :w]
+
+                img[y:y+h, x:x+w] = squished
+```
+Which created in the squishing result I wanted.
+
+-----
+<br>
 
 ### Part C
 ### Test the interaction prototype
 
 Now flight test your interactive prototype and **note down your observations**:
 For example:
-1. When does it what it is supposed to do?
-1. When does it fail?
-1. When it fails, why does it fail?
-1. Based on the behavior you have seen, what other scenarios could cause problems?
+**1. When does it do what it is supposed to do?**
 
+It does what it's supposed to do when someone is in front of it and matching the conditions for squishing a face (which is putting their index finger and thumb on either sides of their face).
+
+
+**2. When does it fail?**
+
+It fails when someone is not fulfilling the specific conditions I mentioned above. This could be as much as using different fingers (like thumb and pinky instead of thumb and index finger), or having the correct fingers making a pinching motion but not near the face. Future considerations could include trying to see what else people do when they expect to pinch their face. Do people expect to initiate the pinching visual effect when their fingers are surrounding their face (my current conditions), or do they pinch next to their face and expect the pinching visual effect as well?
+
+**3. When it fails, why does it fail?**
+
+It fails when users don't match the specific conditions I've written using `OpenCV`. This is due to the nature of how the `OpenCV` API is structured. I have to write code like `if (x < pointerX and pointerX < x+w) and (pointerY < y) and (x < thumbX and thumbX < x+w) and (thumbY > y+h)` as opposed to a natural language question such as `Are the user's fingers near their face and making a pinching motion?`
+
+
+**4. Based on the behavior you have seen, what other scenarios could cause problems?**
+
+Other situations that could cause problems include:
+- If there are multiple users
+- If the user is using both hands to pinch two different faces
+- If two people are pinching the same face
+- If the direction of the thumb and index finger is not vertical (violates the assumptions I made while writing the condition that the direction of the thumb and index finger is vertical)
+
+<br>
+  
 **\*\*\*Think about someone using the system. Describe how you think this will work.\*\*\***
-1. Are they aware of the uncertainties in the system?
-1. How bad would they be impacted by a miss classification?
-1. How could change your interactive system to address this?
-1. Are there optimizations you can try to do on your sense-making algorithm.
+
+**1. Are they aware of the uncertainties in the system?**
+
+No, they would not know about the specific conditions I coded. The condition of the pinching being done by the thumb and index finger is more intuitive, because it's more natural to pinch that way and a line appears when they pinch with those two fingers. The condition of the thumb and index finger being within the right and left side of the face's bounding box is a pretty arbitrary condition, and it's also pretty hard to explain without using a lot of the screen space.
+
+**2. How bad would they be impacted by a miss classification?**
+
+It might be hard at first for users to find out where they need to pinch, but since the feed is continuous and it shows immediately when you fulfill the pinching conditions, I don't think it will be that hard for users to adjust and find the right conditions just by moving their hand around.
+
+**3. How could change your interactive system to address this?**
+
+I could add/remove conditions based on user feedback. For example, if users don't understand why their fingers need to be positioned in a specific place to make the pinching visual, I could also just make it so that if they do a pinching motion anywhere the pinching visual activates.
+
+
+**4. Are there optimizations you can try to do on your sense-making algorithm.**
+
+I could add text instructions like "Make a pinching motion with your thumb and pointer finger!"
+
+
+-----
+<br>
 
 ### Part D
 ### Characterize your own Observant system
@@ -255,6 +335,15 @@ During the lecture, we mentioned questions to help characterize a material:
 * How does X feel?
 
 **\*\*\*Include a short video demonstrating the answers to these questions.\*\*\***
+
+For "What can you use X for?", "What is a good environment for X?", and "How does X feel?":  
+[Video link](https://drive.google.com/file/d/1oRtgr1o2X81RiCgSEkexfEszPDBnN6so/view?usp=drive_link)  
+This video demonstrates an ideal use of the system.
+
+For "What is a bad environment for X?", "When will X break?", and "When it breaks how will X break?":  
+[Video link](https://drive.google.com/file/d/1FQFBbNpF2GiSqJ4rdnwnXd7L6nBA5uCf/view?usp=drive_link)  
+This video demonstrates what might go wrong, including 1) the system recognizing my neck as a face, 2) face not squishing when the fingers aren't within the face box, or 3) horizontally pinching instead of vertically pinching
+
 
 ### Part 2.
 
