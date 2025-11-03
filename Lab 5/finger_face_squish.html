@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Finger-Face Squish — Demo</title>
+  <style>
+    :root{--bg:#ffffff;--card:#ffffff;--accent:#7dd3fc}
+    html,body{height:100%;margin:0;color:#3e3f3f;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+    .wrap{position: relative; left: -150px; max-width:980px;margin:28px auto;padding:18px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    h1{margin:0 0 8px;font-weight:600}
+    p{margin:0 0 12px;color:#3e3f3f}
+    #canvas{max-width:100%;height:auto;border-radius:8px;background:#cccaca;display:block;aspect-ratio:16/9;}
+    .controls{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}
+    .chip{background:var(--card);padding:8px 12px;border-radius:999px;font-size:30px;border-color: #cccaca;}
+    label{display:flex;gap:8px;align-items:center}
+    small{color: #636363}
+    footer{margin-top:12px;color:#636363;font-size:13px}
+    #polaroidStrip {
+    position: absolute;
+    bottom: 20px;
+    right: 90px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    padding: 30px 10px 30px 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    height: 720px;
+    width: 220px;
+    overflow: scroll;
+    transform: skew(-5deg, 5deg)
+    }
+    .polaroid {
+    width: 200px;
+    height: auto;
+    object-fit: cover;
+    object-fit: contain;
+    /* transform: skew(5deg, -5deg) */
+    }
+</style>
+
+</head>
+<body>
+  <div class="wrap">
+    <h1>Smile! You're on camera :)</h1>
+    <p>Try moving your fingers near your face and make a pinching motion with your thumb and index finger!.</p>
+
+    <canvas id="canvas" width="1280" height="720"></canvas>
+
+    <div class="controls">
+      <!-- <div class="chip">Status: <span id="status">loading models…</span></div>
+      <label class="chip"><input id="debug" type="checkbox"> Show debug overlays</label> -->
+      <button class="chip" id="captureBtn">📸 Capture squished face</button>
+    </div>
+
+    <footer>Works best in Chrome or Edge. Allow camera access. This is a single-file demo using MediaPipe Hands + FaceMesh.</footer>
+  </div>
+  <div>
+    <div id="polaroidStrip"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+
+  <script>
+  (async ()=>{
+    const video = document.createElement('video');
+    video.playsInline = true;
+    video.muted = true;
+    video.autoplay = true;
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // const statusEl = document.getElementById('status');
+    // const debugToggle = document.getElementById('debug');
+    // const strengthInput = document.getElementById('strength');
+
+    let latestHands = null;
+    let latestFace = null;
+
+    async function startCamera(){
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({video:true, audio:false});
+        video.srcObject = stream;
+        await video.play();
+        // statusEl.textContent = 'camera running';
+      }catch(e){
+        // statusEl.textContent = 'camera error — ' + e.message;
+        throw e;
+      }
+    }
+
+    const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+    hands.setOptions({maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6});
+    hands.onResults((r)=>{ latestHands = r; });
+
+    const faceMesh = new FaceMesh({locateFile:(file)=>`https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`});
+    faceMesh.setOptions({maxNumFaces:1, refineLandmarks:true, minDetectionConfidence:0.6, minTrackingConfidence:0.6});
+    faceMesh.onResults((r)=>{ latestFace = r; });
+
+    const cameraProcessor = new Camera(video, {
+      onFrame: async () => {
+        await hands.send({image: video});
+        await faceMesh.send({image: video});
+      },
+      width: 1280,
+      height: 720
+    });
+
+    await startCamera();
+    cameraProcessor.start();
+
+    // statusEl.textContent = 'models ready — move your hand';
+
+    function getFaceBox(faceLandmarks){
+      if(!faceLandmarks || faceLandmarks.length===0) return null;
+      let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+      for(const lm of faceLandmarks){
+        minX = Math.min(minX, lm.x);
+        minY = Math.min(minY, lm.y);
+        maxX = Math.max(maxX, lm.x);
+        maxY = Math.max(maxY, lm.y);
+      }
+      const pad = 0.07;
+      minX = Math.max(0, minX - pad);
+      minY = Math.max(0, minY - pad);
+      maxX = Math.min(1, maxX + pad);
+      maxY = Math.min(1, maxY + pad);
+      return {
+        x: Math.round(minX * canvas.width),
+        y: Math.round(minY * canvas.height),
+        w: Math.round((maxX - minX) * canvas.width),
+        h: Math.round((maxY - minY) * canvas.height)
+      };
+    }
+
+    function getFingertipsFromHands(handsResult){
+      if(!handsResult || !handsResult.multiHandLandmarks) return [];
+      const tipsIdx = [4,8,12,16,20];
+      const fingertips = [];
+      for(const lmArr of handsResult.multiHandLandmarks){
+        for(const i of tipsIdx){
+          const lm = lmArr[i];
+          fingertips.push({x: lm.x * canvas.width, y: lm.y * canvas.height});
+        }
+      }
+      return fingertips;
+    }
+
+    function distance(a,b){ const dx=a.x-b.x, dy=a.y-b.y; return Math.hypot(dx,dy); }
+
+    function anyFingerNearFace(fingertips, faceBox){
+      if(!faceBox) return {near:false,dist:Infinity,closest:null};
+      const faceCenter = {x: faceBox.x + faceBox.w/2, y: faceBox.y + faceBox.h/2};
+      let closest=null, minDist=Infinity;
+      for(const f of fingertips){
+        const d = distance(f, faceCenter);
+        if(d<minDist){ minDist=d; closest=f; }
+      }
+      const diag = Math.hypot(faceBox.w, faceBox.h);
+      return {near: minDist < diag*0.5, dist: minDist, closest};
+    }
+
+    function drawDebug(faceBox, fingertips, faceLandmarks, squishActive = false) {
+        if (!debugToggle.checked) return;
+
+        ctx.save();
+
+        // --- FACE LANDMARKS ---
+        // if (faceLandmarks && faceLandmarks.length > 0) {
+        //     ctx.fillStyle = "rgba(0, 255, 255, 0.9)";
+        //     for (const lm of faceLandmarks) {
+        //     const x = lm.x * canvas.width;
+        //     const y = lm.y * canvas.height;
+        //     ctx.beginPath();
+        //     ctx.arc(x, y, 2.2, 0, Math.PI * 2);
+        //     ctx.fill();
+        //     }
+        // }
+
+        // --- FACE BOX ---
+        if (faceBox) {
+            ctx.strokeStyle = squishActive
+            ? "rgba(255,80,80,0.9)"
+            : "rgba(100,255,100,0.8)";
+            ctx.lineWidth = 3;
+            ctx.strokeRect(faceBox.x, faceBox.y, faceBox.w, faceBox.h);
+        }
+
+        // --- FINGERTIPS ---
+        if (fingertips && fingertips.length > 0) {
+            ctx.fillStyle = "rgba(255,200,60,0.95)";
+            for (const f of fingertips) {
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, 6, 0, Math.PI * 2);
+            ctx.fill();
+            }
+        }
+
+        ctx.restore();
+    }
+
+    let offsetX = 0;
+    let offsetY = 0;
+    let finalW = 0;
+    let finalH = 0;
+
+
+    function render(){
+      const vRatio = video.videoWidth / video.videoHeight;
+      const cRatio = canvas.width / canvas.height;
+      let drawWidth, drawHeight, dx, dy;
+      if(vRatio > cRatio){
+        drawHeight = canvas.height;
+        drawWidth = drawHeight * vRatio;
+        dx = -(drawWidth - canvas.width)/2;
+        dy = 0;
+      } else {
+        drawWidth = canvas.width;
+        drawHeight = drawWidth / vRatio;
+        dx = 0;
+        dy = -(drawHeight - canvas.height)/2;
+      }
+
+      ctx.drawImage(video, dx, dy, drawWidth, drawHeight);
+
+      const faceBox = latestFace && latestFace.multiFaceLandmarks && latestFace.multiFaceLandmarks[0] ? getFaceBox(latestFace.multiFaceLandmarks[0]) : null;
+    //   console.log('faceBox: ', faceBox)
+      const fingertips = getFingertipsFromHands(latestHands);
+
+      const fingerState = anyFingerNearFace(fingertips, faceBox);
+    //   const baseStrength = parseFloat(strengthInput.value);
+
+      const squishActive = faceBox && fingerState.near;
+    //   drawDebug(faceBox, fingertips, latestFace?.multiFaceLandmarks?.[0], squishActive);
+
+      if(faceBox && fingerState.near){
+
+        try {
+            // Convert normalized faceBox coords to *video space*
+            const vWidth = video.videoWidth;
+            const vHeight = video.videoHeight;
+            const cWidth = canvas.width;
+            const cHeight = canvas.height;
+
+            // Convert from canvas coords to video coords
+            const sx = (faceBox.x / cWidth) * vWidth;
+            const sy = (faceBox.y / cHeight) * vHeight;
+            const sw = (faceBox.w / cWidth) * vWidth;
+            const sh = (faceBox.h / cHeight) * vHeight;
+
+            // Destination on canvas
+            const dx2 = faceBox.x;
+            const dy2 = faceBox.y;
+            const dw = faceBox.w;
+            const dh = faceBox.h;
+
+            // Squish math
+            const thumb_index_dist = distance(fingertips[0], fingertips[1])
+            const strength = thumb_index_dist / 200
+            //console.log('strength: ', strength)
+
+            // vertical shortening
+            finalH = Math.round(sh * strength)
+            offsetY = Math.round(dy2 + (dh - finalH) / 2);
+
+            // horizontal stretching
+            finalW = Math.round((dw / strength));
+            offsetX = Math.round(dx2 + (dw - finalW) / 2);
+
+            // Extract that face region from the video
+            const tmp = document.createElement('canvas');
+            tmp.width = sw;
+            tmp.height = sh;
+            const tctx = tmp.getContext('2d');
+            tctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
+
+            // Draw squished face
+            ctx.save();
+            ctx.imageSmoothingEnabled = true;
+            ctx.drawImage(tmp, 0, 0, sw, sh, offsetX-30, offsetY-30, finalW*1.3, finalH*1.3);
+            ctx.restore();
+
+        } catch (err) {
+            console.warn("Squish failed", err);
+        }
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    const captureBtn = document.getElementById("captureBtn");
+    const polaroidStrip = document.getElementById("polaroidStrip");
+
+    captureBtn.addEventListener("click", () => {
+    try {
+        // Create a snapshot of the entire current canvas
+        const snapshot = document.createElement("canvas");
+        snapshot.width = canvas.width;
+        snapshot.height = canvas.height;
+        const sctx = snapshot.getContext("2d");
+        sctx.drawImage(canvas, 0, 0); // copy the whole current frame as-is
+
+        // Now crop just the squished face region from that frozen snapshot
+        const faceData = sctx.getImageData(offsetX, offsetY, finalW, finalH);
+        const exportCanvas = document.createElement("canvas");
+        exportCanvas.width = finalW;
+        exportCanvas.height = finalH;
+        const ectx = exportCanvas.getContext("2d");
+        ectx.putImageData(faceData, 0, 0);
+
+        const img = new Image();
+        img.src = exportCanvas.toDataURL("image/png");
+        img.className = "polaroid";
+
+        // const rotation = (Math.random() * 8 - 4).toFixed(2);
+        img.style.transform = `rotate(-5deg, 5deg)`;
+
+        polaroidStrip.prepend(img);
+
+    } catch (err) {
+        console.warn("Capture failed", err);
+    }
+    });
+
+
+    requestAnimationFrame(render);
+  })();
+  </script>
+</body>
+</html>

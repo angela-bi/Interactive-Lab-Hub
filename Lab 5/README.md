@@ -317,7 +317,6 @@ I could add/remove conditions based on user feedback. For example, if users don'
 
 I could add text instructions like "Make a pinching motion with your thumb and pointer finger!"
 
-
 -----
 <br>
 
@@ -350,3 +349,4 @@ This video demonstrates what might go wrong, including 1) the system recognizing
 Following exploration and reflection from Part 1, finish building your interactive system, and demonstrate it in use with a video.
 
 **\*\*\*Include a short video demonstrating the finished result.\*\*\***
+
