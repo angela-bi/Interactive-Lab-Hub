@@ -442,3 +442,5 @@ Here was the feedback I got:
 **\*\*\*Include a short video demonstrating the finished result.\*\*\***
 
 [Link to video of finished result](https://drive.google.com/file/d/1NWBM6kpCc-SV3B7ZUX1eW62orxko0lm9/view?usp=drive_link)
+
+Finished code is located in `finger_face_squish.html`. To run it, I use VSCode's Live Server extension to open the page with Live Server!
