@@ -348,5 +348,97 @@ This video demonstrates what might go wrong, including 1) the system recognizing
 
 Following exploration and reflection from Part 1, finish building your interactive system, and demonstrate it in use with a video.
 
+**Brainstorming, generating code, and editing code**
+  
+Building on what I could use the system for, I designed an interaction diagram for how this could be a photobooth-style device. I initially imagined that it could be a standing device like this:
+
+![IMG_31BD91EC5119-1](https://github.com/user-attachments/assets/69710e8c-b0ce-4312-aa73-f86086106dee)
+
+
+After looking at the code I wrote last week, I realized that it would be easier to implement this using a webpage and Javascript libraries. I used chatGPT [chat log here](https://chatgpt.com/share/69082dcc-91fc-800d-a4e4-f0c47036b18d) to generate the initial code for a webpage that "that displays a user's camera feed, detecting their fingers? if their fingers are around their face, distort the face so that it squishes."
+
+ChatGPT was able to pick a good Javascript replacement for MediaPiper, but there were some issues with the functionality of the squishing. 1) The way it sensed if fingers were close enough to the face was a bit off 2) it wasn't squishing the face and 3) the "squishing" distortion wasn't good.
+
+For 1) I looked at the code and realized that the way that the implementation of the code would solve some problems mentioned in Part A, including the earlier problem of not registering horizontally pinching as a "pinch." I decreased the distance away from the face and left the rest of the code as is.
+
+```
+function anyFingerNearFace(fingertips, faceBox){
+      if(!faceBox) return {near:false,dist:Infinity,closest:null};
+      const faceCenter = {x: faceBox.x + faceBox.w/2, y: faceBox.y + faceBox.h/2};
+      let closest=null, minDist=Infinity;
+      for(const f of fingertips){
+        const d = distance(f, faceCenter);
+        if(d<minDist){ minDist=d; closest=f; }
+      }
+      const diag = Math.hypot(faceBox.w, faceBox.h);
+      return {near: minDist < diag*0.5, dist: minDist, closest};
+    }
+```
+
+For 2) I reimplemented the code for that section. What was initially generated was:
+
+```
+        const fingerState = anyFingerNearFace(fingertips, faceBox);
+        const baseStrength = parseFloat(strengthInput.value);
+
+        const sx = faceBox.x, sy = faceBox.y, sw = faceBox.w, sh = faceBox.h;
+        const dw = sw;
+        const dh = Math.max(1, Math.round(sh * strength));
+        const dx2 = faceBox.x;
+        const dy2 = Math.round(faceBox.y + (sh - dh) / 2);
+        
+        
+        const bulge = 1 + (1 - strength) * 0.08;
+        const finalW = Math.round(dw * bulge);
+        const finalX = Math.round(dx2 - (finalW - dw)/2);
+```
+
+This made it so that the amount of squish didn't dynamically change, and was only based on a slider that the user would toggle. I looked at the API and the code that was generated, and wrote out the way I wanted it to squish:
+
+![IMG_DEBEFD570942-1](https://github.com/user-attachments/assets/aa57e679-aa84-4988-b008-535b4296b7e8)
+
+The updated code became: 
+
+```
+            const thumb_index_dist = distance(fingertips[0], fingertips[1])
+            const strength = thumb_index_dist / 200
+            //console.log('strength: ', strength)
+
+            // vertical shortening
+            finalH = Math.round(sh * strength)
+            offsetY = Math.round(dy2 + (dh - finalH) / 2);
+
+            // horizontal stretching
+            finalW = Math.round((dw / strength));
+            offsetX = Math.round(dx2 + (dw - finalW) / 2);
+```
+
+This way, the distance between the thumb and index finger would determine the amount of squish, which I implemented as the amount of vertical shortening and horizontal stretching. 
+<br>
+  
+**Editing the UI**
+
+After I finished the core functionality again, I wanted to make it seem like a photobooth. I used a combination of prompting and manual editing to add a title, button that captures pictures, and a "polaroid" on the side that would save your squished faces.
+
+<img width="1281" height="791" alt="Screenshot 2025-11-02 at 9 16 51 PM" src="https://github.com/user-attachments/assets/60d9e934-80ee-49f4-97da-76d8c334344c" />
+
+<img width="1512" height="901" alt="Screenshot 2025-11-02 at 9 32 52 PM" src="https://github.com/user-attachments/assets/78d1387c-dbdc-4b79-b163-2131687df3e2" />
+
+<img width="1067" height="811" alt="Screenshot 2025-11-02 at 9 43 15 PM" src="https://github.com/user-attachments/assets/0536070b-447e-4070-8c39-acca4a3c501c" />  
+  
+**Testing with users**
+
+I asked my roommate to test the photobooth and give me feedback.
+
+![IMG_5553](https://github.com/user-attachments/assets/ec710697-3d6b-4a78-8ff5-db663518af72)
+
+<img width="1395" height="802" alt="Screenshot 2025-11-02 at 9 54 13 PM" src="https://github.com/user-attachments/assets/1998340e-ee6c-4789-b73e-8c0761eee08c" />
+
+Here was the feedback I got:
+- The direction of the squishes are horizontal, agnostic of the direction the user is pinching. For example, pinching vertically would give you the same visual effect as pinching horizontally.
+- The video is mirrored, which threw her off a bit
+- The intentions of the photobooth were clear! It was clear what was intended of the users, and its purpose.
+
 **\*\*\*Include a short video demonstrating the finished result.\*\*\***
 
+[Link to video of finished result](https://drive.google.com/file/d/1NWBM6kpCc-SV3B7ZUX1eW62orxko0lm9/view?usp=drive_link)
