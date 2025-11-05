@@ -59,6 +59,8 @@ mosquitto_pub -h farlab.infosci.cornell.edu -p 1883 -t 'IDD/test/yourname' -m 'H
 
 **💡 Brainstorm 5 ideas for messaging between devices**
 
+![IMG_27A477196F62-1](https://github.com/user-attachments/assets/6c585a29-1e57-4dfd-8e77-df420f4129f2)
+
 ---
 
 ## Part B: Collaborative Pixel Grid
@@ -99,6 +101,10 @@ Hold colored objects near sensor to change your pixel!
 
 **📸 Include: Screenshot of grid + photo of your Pi setup**
 
+![IMG_5564](https://github.com/user-attachments/assets/d709bc28-2fd0-49cc-af69-3cf8792c4eba)
+
+[Video of grid and pi](https://drive.google.com/file/d/19x196xLCY41LF83rwQdQdu9hYiAdSO1-/view?usp=drive_link)
+
 ---
 
 ## Part C: Make Your Own
@@ -107,22 +113,6 @@ Hold colored objects near sensor to change your pixel!
 - 3+ people, 3+ Pis
 - Each Pi contributes sensor input via MQTT
 - Meaningful or fun interaction
-
-**Ideas:**
-
-**Sensor Fortune Teller**
-- Each Pi sends 0-255 from different sensor
-- Server generates fortunes from combined values
-
-**Frankenstories**
-- Sensor events → story elements (not text!)
-- Red = danger, gesture up = climbed, distance <10cm = suddenly
-
-**Distributed Instrument**
-- Each Pi = one musical parameter
-- Only works together
-
-**Others:** Games, presence display, mood ring
 
 ### Deliverables
 
@@ -152,65 +142,6 @@ Replace this README with your documentation:
 - Challenges with distributed interaction?
 - How did sensor events work?
 - What would you improve?
-
----
-
-## Code Files
-
-**Server files:**
-- `app.py` - Pixel grid server (Flask + WebSocket + MQTT)
-- `mqtt_viewer.py` - MQTT message viewer for debugging
-- `mqtt_bridge.py` - MQTT → WebSocket bridge
-- `requirements-server.txt` - Server dependencies
-
-**Pi files:**
-- `pixel_grid_publisher.py` - Example (RGB sensor → MQTT)
-- `requirements-pi.txt` - Pi dependencies
-
-**Web interface:**
-- `templates/grid.html` - Pixel grid display
-- `templates/controller.html` - Color picker
-- `templates/mqtt_viewer.html` - Message viewer
-
----
-
-## Debugging Tools
-
-**MQTT Message Viewer:** `http://farlab.infosci.cornell.edu:5001`
-- See all MQTT messages in real-time
-- View topics and payloads
-- Helpful for debugging your own projects
-
-**Command line:**
-```bash
-# See all IDD messages
-mosquitto_sub -h farlab.infosci.cornell.edu -p 1883 -t "IDD/#" -u idd -P "device@theFarm"
-```
-
----
-
-## Troubleshooting
-
-**MQTT:** Broker `farlab.infosci.cornell.edu:1883`, user `idd`, pass `device@theFarm`
-
-**Sensor:** Check `i2cdetect -y 1`, APDS-9960 at `0x39`
-
-**Grid:** Verify server running, check MQTT in console, test with web controller
-
-**Pi venv:** Make sure to activate: `source .venv/bin/activate`
-
-**Stop Screen service (make your screen available again):**
-```bash
-# stop the screen service
-sudo systemctl stop piscreen.service
-```
-
-if you want to restart the screen service
-```bash
-# start the screen service
-sudo systemctl start piscreen.service
-```
-
 
 ---
 
