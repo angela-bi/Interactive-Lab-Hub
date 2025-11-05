@@ -1,6 +1,6 @@
 # Distributed Interaction
 
-**NAMES OF COLLABORATORS HERE**
+**NAMES OF COLLABORATORS HERE** : Kyle Li (kl2296), Jesse Iriah (ji227), Nophar Shalom (ns2242)
 
 For submission, replace this section with your documentation!
 
