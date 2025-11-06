@@ -143,6 +143,13 @@ Replace this README with your documentation:
 - How did sensor events work?
 - What would you improve?
 
+Feedback:
+- Should have tie-breaking mechanism for who guessed correctly faster
+- Can have rounds, and cumulative point tracking
+- Wanted the game to end at some point
+- Maybe have some distracting non-student items ilke cacti?
+- Shorten time or more students?
+
 ---
 
 ## Submission Checklist
