@@ -116,11 +116,13 @@ Hold colored objects near sensor to change your pixel!
 
 ### Deliverables
 
-Replace this README with your documentation:
+---
 
 **1. Project Description (What does it do? Why interesting? User experience?)**
 
 Kyle initially proposed doing something similar to [Nintendo's Box Counting game](https://youtu.be/9PZazcFJEvk), where players are given an arrangement of cubes and are asked to count them within a short time limit. We talked about the idea, and decided to make a similar game where competing players (acting as teachers) must count the number of students that appear on screen before the time runs out, and that the person with the most accurate guess wins.
+
+---
 
 **2. Architecture Diagram (Hardware, connections, data flow, Label input/computation/output)**
 
@@ -196,6 +198,7 @@ stateDiagram-v2
     RESULTS --> IDLE: receive 'round_idle' MQTT
 ```
 
+---
 
 **3. Build Documentation**
 
@@ -301,6 +304,8 @@ for mac, data in players.items():
 print(f"Winners: {winners} (diff={min_diff})")
 ```
 
+---
+
 **4. User Testing**
 
 We tested our game with Iqra and Akash by asking them to play our game for a few rounds.
@@ -319,12 +324,10 @@ The main feedback we got from them was:
 - The screen only displayed student emojis. Iqra suggested that we should add other distracting icons like cacti that people would have to avoid counting in their guess to make the game harder.
 - Both players also found the number of students rendered a bit small for the amount of time they were given to guess, and wanted the countdown to be shorter.
 
+---
+
 **5. Reflection**
 
 Since we decided to just use a laptop as the central server, displaying the number of players was easy and both players could see the screen. Since we also decided to just use the Pi screens and its built-in buttons as inputs, programming the increment/decrement functionality was straightforward. We didn't run into many challenges with distributed interaction, but a lot of the feedback we did get involved making the experience engaging for each of the players.
 
 In the future, we would implement the fixed number of rounds, add other icons, implement tie-breaking functionality, and find other ways to make the game more engaging.
-
----
-
-Resources: [MQTT Guide](https://www.hivemq.com/mqtt-essentials/) | [Paho Python](https://www.eclipse.org/paho/index.php?page=clients/python/docs/index.php) | [Flask-SocketIO](https://flask-socketio.readthedocs.io/)
