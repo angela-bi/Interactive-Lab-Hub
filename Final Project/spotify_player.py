@@ -1,40 +1,36 @@
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
-import vlc
-import requests
-import sys
-import io
-from PIL import Image, ImageDraw, ImageFont
+#!/usr/bin/env python3
+"""
+Raspberry Pi 5 QR Scanner + ST7789 Display + Laptop Control
+"""
+
+import time
 import digitalio
 import board
+import requests
+import cv2
+from pyzbar.pyzbar import decode
+from PIL import Image, ImageOps
+import io
+
+# --- DISPLAY LIBRARIES ---
+from adafruit_rgb_display.rgb import color565
 import adafruit_rgb_display.st7789 as st7789
-import time
 
-# ------------------------------
-# CONFIG
-# ------------------------------
+# ==========================================
+# 1. HARDWARE SETUP (From your example)
+# ==========================================
 
-SPOTIFY_CLIENT_ID = sys.argv[1]
-SPOTIFY_CLIENT_SECRET = sys.argv[2]
-
-scroll_x = 0
-
-sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
-    client_id=SPOTIFY_CLIENT_ID,
-    client_secret=SPOTIFY_CLIENT_SECRET
-))
-
-# ------------------------------
-# SETUP PI TFT DISPLAY
-# ------------------------------
-
+# Configuration for CS pin (GPIO5/Pin 29)
 cs_pin = digitalio.DigitalInOut(board.D5)
 dc_pin = digitalio.DigitalInOut(board.D25)
-reset_pin = digitalio.DigitalInOut(board.D24)
-BAUDRATE = 24000000
+reset_pin = None
+BAUDRATE = 64000000
+
+# Setup SPI
 spi = board.SPI()
 
-disp = st7789.ST7789(
+# Setup Display
+display = st7789.ST7789(
     spi,
     cs=cs_pin,
     dc=dc_pin,
@@ -44,165 +40,143 @@ disp = st7789.ST7789(
     height=240,
     x_offset=53,
     y_offset=40,
+    # rotation=90 # You might need to uncomment this if the image is sideways
 )
 
-width = disp.width
-height = disp.height
-
+# Setup Backlight
 backlight = digitalio.DigitalInOut(board.D22)
-backlight.switch_to_output()
-backlight.value = True
+backlight.switch_to_output(value=True)
 
-# ------------------------------
-# UTILITIES
-# ------------------------------
+# ==========================================
+# 2. CONFIGURATION
+# ==========================================
+LAPTOP_IP = "10.56.3.187"  # <--- UPDATE THIS TO YOUR LAPTOP IP
+LAPTOP_PORT = "5002"
+RESET_TIME = 6000
 
-def get_album_info(track_url):
-    track_id = track_url.split("/")[-1].split("?")[0]
-    track_info = sp.track(track_id)
-    return track_info
+# ==========================================
+# 3. HELPER FUNCTIONS
+# ==========================================
 
-def get_itunes_preview(track_name, artist_name):
-    url = "https://itunes.apple.com/search"
-    params = {"term": f"{artist_name} {track_name}", "limit": 1}
-    try:
-        resp = requests.get(url, params=params).json()
-        if resp.get("resultCount", 0) > 0:
-            return resp["results"][0].get("previewUrl")
+def get_youtube_thumbnail(url):
+    """
+    Downloads YouTube thumbnail and converts it to a PIL Image 
+    that fits the ST7789 screen.
+    """
+    video_id = ""
+    if "v=" in url:
+        try:
+            video_id = url.split("v=")[1].split("&")[0]
+        except: pass
+    elif "youtu.be/" in url:
+        try:
+            video_id = url.split("youtu.be/")[1].split("?")[0]
+        except: pass
+
+    if not video_id:
         return None
-    except:
-        return None
 
-def download_album_art(url):
-    try:
-        img_data = requests.get(url).content
-        return Image.open(io.BytesIO(img_data))
-    except:
-        return None
-
-# ------------------------------
-# DISPLAY FUNCTION
-# ------------------------------
-
-def display_song_on_tft(song_name, artist_name, album_art_url):
-    global scroll_x
-
-    # In landscape mode, image buffer must be 240x135
-    img_width = 240
-    img_height = 135
-
-    # Create the buffer in landscape
-    image = Image.new("RGB", (img_width, img_height), (0, 0, 0))
-    draw = ImageDraw.Draw(image)
-
-    # -----------------------------
-    # LOAD & POSITION ALBUM ART
-    # -----------------------------
-    album_img = download_album_art(album_art_url)
-
-    if album_img:
-        # Fit art into the LEFT half (135x135)
-        album_img = album_img.resize((135, 135), Image.BICUBIC)
-        image.paste(album_img, (0, 0))   # left side
-
-    # -----------------------------
-    # SCROLLING TEXT ON RIGHT SIDE
-    # -----------------------------
-    try:
-        font = ImageFont.truetype(
-            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20
-        )
-    except:
-        font = ImageFont.load_default()
-
-    text = f"{song_name}   -   {artist_name}"
-
-    # how wide the scrolling area is
-    scroll_area_x = 140
-    scroll_area_y = 10
-    scroll_area_width = 90  # right side of screen
-
-    text_width = draw.textlength(text, font=font)
-
-    # draw text twice for seamless loop
-    draw.text(
-        (scroll_area_x - scroll_x, scroll_area_y),
-        text,
-        font=font,
-        fill=(255, 255, 255),
-    )
-    draw.text(
-        (scroll_area_x - scroll_x + text_width + 40, scroll_area_y),
-        text,
-        font=font,
-        fill=(255, 255, 255),
-    )
-
-    # update scroll
-    scroll_x = (scroll_x + 2) % (text_width + 40)
-
-    # -----------------------------
-    # Rotate final image to portrait
-    # -----------------------------
-    disp.image(image, rotation=90)
-
-# ------------------------------
-# PLAYBACK
-# ------------------------------
-
-def play_song(track_url):
-    info = get_album_info(track_url)
-
-    song_name = info["name"]
-    artist_name = info["artists"][0]["name"]
-    album_art_url = info["album"]["images"][0]["url"]
-    preview_url = info["preview_url"]
-
-    # ----------------------------------
-    # CONTINUOUS UPDATE LOOP FOR SCROLL
-    # ----------------------------------
-    import threading
-    stop_scrolling = False
+    # Download High Quality Thumb
+    thumb_url = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
+    print(f"Downloading art: {thumb_url}")
     
-    def updater():
-        while not stop_scrolling:
-            display_song_on_tft(song_name, artist_name, album_art_url)
-            time.sleep(0.05)   # scrolling speed
+    try:
+        resp = requests.get(thumb_url, timeout=2)
+        if resp.status_code == 200:
+            # Convert bytes to PIL Image
+            image = Image.open(io.BytesIO(resp.content))
+            
+            # Resize and Crop to fit the screen dimensions
+            # We use the display.width and display.height so it fits your config
+            image = ImageOps.fit(image, (display.width, display.height), method=Image.LANCZOS)
+            return image
+    except Exception as e:
+        print(f"Image download failed: {e}")
     
-    t = threading.Thread(target=updater)
-    t.daemon = True
-    t.start()
+    return None
 
-    # ----------------------------------
-    # AUDIO PLAYBACK
-    # ----------------------------------
-    if preview_url:
-        print("Playing Spotify preview...")
-        player = vlc.MediaPlayer(preview_url)
-        player.play()
-        time.sleep(30)  # keep UI alive while playing
-        stop_scrolling = True
+def show_status_color(r, g, b):
+    """Fills screen with a solid color"""
+    display.fill(color565(r, g, b))
+
+# ==========================================
+# 4. MAIN LOOP
+# ==========================================
+
+def main():
+    print("Starting Webcam...")
+    cap = cv2.VideoCapture(0)
+    
+    if not cap.isOpened():
+        print("Error: Webcam not found.")
         return
 
-    itunes_url = get_itunes_preview(song_name, artist_name)
+    print("Scanner Running. Waiting for QR codes...")
+    
+    # Flash blue to show it's ready
+    show_status_color(0, 0, 255)
+    time.sleep(0.5)
+    show_status_color(0, 0, 0) # Clear to black
 
-    if itunes_url:
-        print("Playing iTunes preview...")
-        player = vlc.MediaPlayer(itunes_url)
-        player.play()
-        time.sleep(30)
-        stop_scrolling = True
-        return
+    last_played_link = None
+    last_seen_time = 0
 
-    print("No preview available anywhere.")
-    time.sleep(10)
-    stop_scrolling = True
+    try:
+        while True:
+            # Read frame
+            ret, frame = cap.read()
+            if not ret:
+                break
 
+            qr_codes = decode(frame)
 
-# ------------------------------
-# MAIN
-# ------------------------------
+            # Reset logic: If no code seen for RESET_TIME, allow rescanning
+            if not qr_codes:
+                if last_played_link is not None and (time.time() - last_seen_time > RESET_TIME):
+                    print("Resetting... Ready for new code.")
+                    last_played_link = None
+                    show_status_color(0, 0, 0) # Clear screen to black when reset
 
-if __name__ == "__main__":
-    track_url = "https://open.spotify.com/track/2D1rYPinUnikGU9xNWylnN"
-    play_song(track_url)
+            for code in qr_codes:
+                link = code.data.decode('utf-8')
+                last_seen_time = time.time()
+
+                if link != last_played_link:
+                    print("-" * 30)
+                    print(f"Found: {link}")
+                    
+                    # 1. Show YELLOW while processing
+                    show_status_color(255, 255, 0)
+
+                    # 2. Send to Laptop
+                    try:
+                        requests.get(f"http://{LAPTOP_IP}:{LAPTOP_PORT}/play", params={'url': link}, timeout=1)
+                        print("Sent to laptop.")
+                    except:
+                        print("Could not connect to laptop.")
+
+                    # 3. Get Album Art
+                    art_image = get_youtube_thumbnail(link)
+
+                    # 4. Display Art
+                    if art_image:
+                        display.image(art_image)
+                    else:
+                        # If no art found, show RED, then Black
+                        show_status_color(255, 0, 0)
+                        time.sleep(1)
+                        show_status_color(0, 0, 0)
+
+                    last_played_link = link
+
+            # Small sleep to save CPU
+            time.sleep(0.1)
+
+    except KeyboardInterrupt:
+        print("\nStopping...")
+        backlight.value = False # Turn off screen
+    finally:
+        cap.release()
+
+if __name__ == '__main__':
+    main()
