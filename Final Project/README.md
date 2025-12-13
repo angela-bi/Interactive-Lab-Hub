@@ -54,6 +54,8 @@ This is how we broke it down into a timeline:
 
 We used makeabox.io to create the designs for the base and buildings, which we exported to Illustrator and used Trotec to cut out acrylic and wood. This took a lot of trial and error---sometimes, makeabox.io made a box that didn't fit together, and sometimes we added the wrong material/thickness so it didn't completely cut out the designs. [Video of laser cutting](https://drive.google.com/file/d/1b2aTOYd5n_8dTt5-nXg4UEktvBCX7vKe/view?usp=sharing)
 
+In addition to being able to assemble individual buildings and the base, the design also had to involve fitting the acrylic buildings onto the wooden base. This also took some trial and error, because we had to modify the width of the holes cut in the base so that we were able to fit the acrylic buildings on top of the base. [Video of earlier prototype](https://drive.google.com/file/d/1vNrLCEC3M1uJeTkorbxCvN4FkjzVsQPe/view?usp=drive_link)
+
 ### Overview: Input (QR code) -> song information -> outputs (pi display, speakers, LED lights)
 
 This is how we broke down the process of input (QR code) to outputs (pi screen, speaker, lights):
@@ -228,17 +230,52 @@ if art_image:
 
 By the showcase deadline of December 1, we had everything working except the LED lights. [Here is a video we recorded of it working.](https://drive.google.com/file/d/1paV4NpYWIWsTyBRG5n4qti43AxIXps6V/view?usp=drive_link)
 
-
 ### Song album cover -> LED lights 
+
+The hardest part of the whole process was getting the LED lights to display the dominant colors of the album. This involved writing code to extract the dominant colors from the album art:
+
+```
+def extract_primary_colors(image, num_colors=3):
+    """
+    Given a PIL Image, returns `num_colors` dominant colors as RGB tuples.
+    Uses k-means clustering on all pixels.
+    """
+    # Convert image to numpy array
+    img = image.convert("RGB")
+    img_np = np.array(img)
+
+    # Flatten pixel array into (num_pixels, 3)
+    pixels = img_np.reshape(-1, 3)
+
+    # KMeans clustering
+    kmeans = KMeans(n_clusters=num_colors, n_init="auto")
+    kmeans.fit(pixels)
+
+    # Cluster centers are the dominant colors
+    colors = kmeans.cluster_centers_.astype(int)
+
+    # Convert to list of (R, G, B)
+    return [tuple(color) for color in colors]
+```
+
+When we tried to get the LED lights to work, our combined lack of electrical engineering experience resulted in all of our Raspberry Pis being nonfunctional or partially broken. Nophar managed to get a Raspberry Pi 4, which she reprogrammed to make it work and connect successfully with the LED lights. Video of LED lights working for the first time
 
 --- 
 
 ## Final Functioning project  
 
+
+
 ### Video of someone using our project
 
 
 ### Archive of all code, design patterns, etc. used in the final design. (As with labs, the standard should be that the documentation would allow you to recreate your project if you woke up with amnesia.)
+
+Code for raspberry pi
+
+Code for computer
+
+Laser cut designs
 
 ---
 
