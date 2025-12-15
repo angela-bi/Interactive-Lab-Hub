@@ -2,12 +2,14 @@
 
 Collaborators: Kyle Li (kl2296), Nophar Shalom (ns2242)
 
+<details>
 Requirements:
 1. Project plan: Big idea, timeline, parts needed, fall-back plan. (Can be same as previous turn-in, but updated if you changed your plan)
 2. Functioning project: The finished project should be a device, system, interface, etc. that people can interact with.
 3. Documentation of design process
 4. Archive of all code, design patterns, etc. used in the final design. (As with labs, the standard should be that the documentation would allow you to recreate your project if you woke up with amnesia.)
 5. Video of someone using your project
+</details>
 
 ## Project plan  
 <img width="1007" height="564" alt="Screenshot 2025-12-11 at 1 07 05 PM" src="https://github.com/user-attachments/assets/5fc27aab-237c-43e0-9be7-f6c8cebca19f" />  
@@ -55,6 +57,11 @@ This is how we broke it down into a timeline:
 We used makeabox.io to create the designs for the base and buildings, which we exported to Illustrator and used Trotec to cut out acrylic and wood. This took a lot of trial and error---sometimes, makeabox.io made a box that didn't fit together, and sometimes we added the wrong material/thickness so it didn't completely cut out the designs. [Video of laser cutting](https://drive.google.com/file/d/1b2aTOYd5n_8dTt5-nXg4UEktvBCX7vKe/view?usp=sharing)
 
 In addition to being able to assemble individual buildings and the base, the design also had to involve fitting the acrylic buildings onto the wooden base. This also took some trial and error, because we had to modify the width of the holes cut in the base so that we were able to fit the acrylic buildings on top of the base. [Video of earlier prototype](https://drive.google.com/file/d/1vNrLCEC3M1uJeTkorbxCvN4FkjzVsQPe/view?usp=drive_link)
+
+<img width="633" height="656" alt="Screenshot 2025-12-14 at 7 12 24 PM" src="https://github.com/user-attachments/assets/1eb12ff2-1ec3-4fd4-ac80-60897180363f" />
+<img width="595" height="630" alt="Screenshot 2025-12-14 at 7 12 57 PM" src="https://github.com/user-attachments/assets/b3a38701-0c07-4492-9d0e-f933d6c35906" />
+<img width="593" height="623" alt="Screenshot 2025-12-14 at 7 13 12 PM" src="https://github.com/user-attachments/assets/1bf3c92e-9957-40a6-a98e-11295e53323e" />
+
 
 ### Overview: Input (QR code) -> song information -> outputs (pi display, speakers, LED lights)
 
@@ -173,7 +180,35 @@ Below is the relevant snippet in our `___main___` function:
     except:
         print("Could not connect to laptop.")
 ```
-This code makes it so that once a song is found, the youtube link opens in the laptop.
+This code makes it so that once a song is found, the youtube link opens in the laptop. On the server/computer side, the user must run the code:
+
+```
+from flask import Flask, request
+import webbrowser
+import os
+
+app = Flask(__name__)
+
+@app.route('/play', methods=['GET'])
+def play():
+    # Get the link sent from the Pi
+    link = request.args.get('url')
+
+    if link:
+        print(f"Received command to play: {link}")
+        # Open the link in your default browser (Chrome/Safari/Edge)
+        webbrowser.open(link)
+        return "Command Received: Playing!"
+    else:
+        return "Error: No URL provided."
+
+if __name__ == '__main__':
+    # '0.0.0.0' allows other devices (like the Pi) to talk to this laptop
+    print("🔊 Laptop Listener Active! Waiting for Pi...")
+    app.run(host='0.0.0.0', port=5001)
+```
+
+This makes it so that when the pi sends the request with the Youtube URL, the computer connected to the server can play it. In order to play the song out loud, we connected the computer with a bluetooth speaker and put it inside of our prototype.
 
 ### Song -> pi screen 
 
@@ -232,7 +267,7 @@ By the showcase deadline of December 1, we had everything working except the LED
 
 ### Song album cover -> LED lights 
 
-The hardest part of the whole process was getting the LED lights to display the dominant colors of the album. This involved writing code to extract the dominant colors from the album art:
+The hardest part of the whole process was getting the LED lights to display the dominant colors of the album. This was the initial code we used to extract the dominant colors from the album art:
 
 ```
 def extract_primary_colors(image, num_colors=3):
@@ -258,25 +293,80 @@ def extract_primary_colors(image, num_colors=3):
     return [tuple(color) for color in colors]
 ```
 
-When we tried to get the LED lights to work, our combined lack of electrical engineering experience resulted in all of our Raspberry Pis being nonfunctional or partially broken. Nophar managed to get a Raspberry Pi 4, which she reprogrammed to make it work and connect successfully with the LED lights. Video of LED lights working for the first time
+When we tried to get the LED lights to work, our combined lack of electrical engineering experience resulted in all of our Raspberry Pis being nonfunctional or partially broken. Nophar managed to get a Raspberry Pi 4, which she reprogrammed to make it work and connect successfully with the LED lights. [Video of LED lights working for the first time!](https://drive.google.com/file/d/1jKgiAGw1eiiBCnUjCLtnjzUOQv13hL-a/view?usp=drive_link)
+
+After we were able to get the LED lights to work, we were able to generate code that made the LED lights turn colors. In our updated set of functions, `set_leds_from_image` creates the top three dominant colors, and `set_led_colors` and `show_status_color` change the LEDs according to those colors.
+
+```
+ def set_led_colors(color_list):
+     """Updates the global target for the animation thread"""
+     global target_colors
+     target_colors = color_list
+ def show_status_color(r, g, b):
+     # 1. Update Screen
+     display.fill(color565(r, g, b))
+     # 2. Update LEDs (Set as single static color)
+     set_led_colors([(r, g, b)])
+ def set_leds_from_image(image):
+     try:
+         # 1. Resize to a small thumbnail (faster processing)
+         thumb = image.resize((50, 50))
+         # 2. Reduce colors to a palette of 10 dominant shades
+         quantized = thumb.quantize(colors=10, method=2)
+         palette = quantized.getpalette()
+         # 3. Find the TOP 3 most "colorful" (saturated) colors
+         scored_colors = []
+         # Check the first 8 dominant colors
+         for i in range(8):
+             if len(palette) < i*3+3: break
+             r = palette[i*3]
+             g = palette[i*3+1]
+             b = palette[i*3+2]
+             # Skip if too dark (black) or too bright (white)
+             brightness = r + g + b
+             if brightness < 40 or brightness > 700:
+                 continue
+             # Calculate saturation (difference between highest and lowest channel)
+             sat = max(r,g,b) - min(r,g,b)
+             scored_colors.append((sat, (r,g,b)))
+         # Sort by saturation (most vibrant first)
+         scored_colors.sort(key=lambda x: x[0], reverse=True)
+         # Pick top 3
+         top_colors = [c[1] for c in scored_colors[:3]]
+         # Fallback if image is B&W or we couldn't find good colors
+         if not top_colors:
+             top_colors = [(palette[0], palette[1], palette[2])]
+         print(f"Cycling between: {top_colors}")
+         # Update the animation thread
+         set_led_colors(top_colors)
+     except Exception as e:
+         print(f"Could not calculate colors: {e}")
+```
 
 --- 
 
-## Final Functioning project  
+## Final Functioning project + Archive of all code, design patterns, etc. used in the final design.
 
+![PXL_20251212_181321993 MP](https://github.com/user-attachments/assets/c9beec79-c5bb-48a3-968d-c724e2cb226e)
 
+Final code for the raspberry pi (4) is under the file `final_project_code_pi.py`. 
 
-### Video of someone using our project
+Final code for the computer is under the file `final_project_code_server.py`.
 
+Designs used are in [this shared google drive](https://drive.google.com/drive/folders/1CJG7a2oDp3OnqXGiVvCIhhRAFl7rJiku?usp=drive_link). QR code card designs are [here](https://drive.google.com/file/d/1zqDnjq1lMP1CET62hn4BgXigs2bKYedH/view?usp=drive_link). 
 
-### Archive of all code, design patterns, etc. used in the final design. (As with labs, the standard should be that the documentation would allow you to recreate your project if you woke up with amnesia.)
+### Video of someone using our project + Feedback and future directions
 
-Code for raspberry pi
+We tested and got feedback about our prototype with multiple people. 
 
-Code for computer
+When we first demoed our project to Wendy, Albert and Hauke, we got the following feedback:
+- Make the prototype closer to eye level so that people have an easier time scanning the QR code
+- Make QR code flashcards that you can hand to people to make the demonstration easier
+- Have some way of indicating to the user that the camera is recording, has recognized the QR code, etc.
 
-Laser cut designs
+We also tested our prototype with Philip, a M.Eng CS student. Here is the [video](https://drive.google.com/file/d/1-6Gw8yGcm1vT1X375p9KZTV2dBWQM-Bf/view?usp=drive_link) 
 
----
-
-## Feedback and future directions
+During demo day, we were able to let many people test our prototype. Here is some feedback we got:
+- We laser printed QR code cards, but the engravings ended up being too light for `cv2` to recognize. In the future, we would make it so that the engravings are dark enough or find alternate ways to make QR code cards!
+-  Sometimes, it would take a long time for the QR codes to be recognized by the camera and `cv2`. This might have been because of the orientation, positioning, distance from the camera, lighting, etc. but there was no way for us to know why the QR code wasn't being read and how we could adjust the QR code or environment. In the future, we might incorporate ways for the system to give feedback to the user, telling them when the QR code isn't being read, and how they might adjust it.
+-  Some album colors involving pink and blue displayed a lot better on the LED lights than other colors such as green. In the future, we would troubleshoot both the algorithm used to generate the dominant colors sent to the LEDs, and the LEDs themselves to figure out how to display colors better.
